@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\CVInformation;
+use App\Models\Skill;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // CV bilgilerini oluştur
+        $cv = CVInformation::factory()->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Factory kullanarak rastgele 8 skill oluştur
+        Skill::factory()
+            ->count(8)
+            ->create([
+                'cv_information_id' => $cv->id
+            ]);
+        
     }
 }
