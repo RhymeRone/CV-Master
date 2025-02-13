@@ -76,8 +76,6 @@ Modern, kapsamlı ve test edilmiş bir CV/Portfolio REST API'si.
 
 ## 🔑 API Endpoints
 
-## 🔑 API Endpoints
-
 ### 🔐 Auth
 | Method | Endpoint | Description | Auth Required |
 |--------|----------|-------------|---------------|
