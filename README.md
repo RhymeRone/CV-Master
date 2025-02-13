@@ -40,17 +40,17 @@ Modern, kapsamlı ve test edilmiş bir CV/Portfolio REST API'si.
 - PHP 8.2+
 - Laravel 11
 - MySQL 8.0+
-- JWT Authentication
 - PHPUnit
 - Laravel Mail
+- Laravel Sanctum
 - Laravel Storage
 
 ## 📦 Kurulum
 
 1. Repository'yi klonlayın
   ```bash
-  git clone https://github.com/username/cv-api.git
-  cd cv-api
+  git clone https://github.com/RhymeRone/CV-Master.git
+  cd CV-Master
   ```
 
 2. Bağımlılıkları yükleyin
