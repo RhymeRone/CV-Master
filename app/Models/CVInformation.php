@@ -63,6 +63,31 @@ class CVInformation extends Model
         return $this->hasMany(Skill::class);
     }
 
+    public function experiences()
+    {
+        return $this->hasMany(Experience::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+
+    public function portfolios()
+    {
+        return $this->hasMany(Portfolio::class);
+    }
+
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
+    public function portfolioCategories()
+    {
+        return $this->hasMany(PortfolioCategory::class);
+    }
+
     protected static function boot()
     {
         parent::boot();

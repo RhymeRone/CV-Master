@@ -36,18 +36,18 @@ class CVInformationFactory extends Factory
             )),
             'birthday' => $this->faker->date('Y-m-d', '-25 years'),
             'degree' => $this->faker->randomElement(['Lisans', 'Yüksek Lisans', 'Doktora']),
-            
+
             // İletişim Bilgileri
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
-            
+
             // Profesyonel Bilgiler
             'experience' => $this->faker->paragraphs(3, true),
             'freelance' => $this->faker->randomElement(['available', 'unavailable']),
             'clients' => $this->faker->numberBetween(0, 50),
             'projects' => $this->faker->numberBetween(5, 100),
-            
+
             // Sosyal Medya Linkleri
             'linkedin' => 'https://linkedin.com/in/' . $this->faker->userName(),
             'github' => 'https://github.com/' . $this->faker->userName(),
@@ -55,11 +55,14 @@ class CVInformationFactory extends Factory
             'facebook' => 'https://facebook.com/' . $this->faker->userName(),
             'instagram' => 'https://instagram.com/' . $this->faker->userName(),
             'website' => $this->faker->url(),
-            
+
             // Medya Dosyaları
-            'image' => 'profile-images/' . $this->faker->image('public/storage/profile-images', 400, 400, null, false),
-            'cv_file' => 'cv-files/' . $this->faker->file('public/storage/cv-files', 'public/storage/cv-files', false),
-            
+            /*  'image' => 'profile-images/' . $this->faker->image('public/storage/cv/images', 400, 400, null, false),
+              'cv_file' => 'cv-files/' . $this->faker->file('public/storage/cv/files', 'public/storage/cv/files', false),
+              */
+            'image' => 'cv/images/default-avatar.jpg',
+            'cv_file' => 'cv/files/default-cv.pdf',
+
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];

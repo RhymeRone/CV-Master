@@ -7,16 +7,9 @@ use App\Models\Skill;
 use App\Http\Resources\SkillResource;
 use App\Http\Requests\Skill\StoreRequest;
 use App\Http\Requests\Skill\UpdateRequest;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SkillController extends Controller
 {
-    use AuthorizesRequests;
-
-    public function __construct()
-    {
-        $this->authorizeResource(Skill::class);
-    }
 
     public function index()
     {

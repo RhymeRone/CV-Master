@@ -9,14 +9,9 @@ use App\Http\Resources\CVInformationResource;
 use App\Models\CVInformation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
 class CVInformationController extends Controller
 {
-    use AuthorizesRequests;
-    public function __construct()
-    {
-        $this->authorizeResource(CVInformation::class);
-    }
 
     public function index(): JsonResponse
     {
@@ -46,42 +41,50 @@ class CVInformationController extends Controller
         ], 201);
     }
 
-    public function show(CVInformation $cVInformation): JsonResponse
+    public function show(CVInformation $cvInformation): JsonResponse
     {
         return response()->json([
-            'data' => new CVInformationResource($cVInformation)
+            'data' => new CVInformationResource($cvInformation)
         ]);
     }
 
-    public function update(UpdateRequest $request, CVInformation $cVInformation): JsonResponse
+    public function update(UpdateRequest $request, CVInformation $cvInformation): JsonResponse
     {
         $data = $request->validated();
         
         if ($request->hasFile('image')) {
-            if ($cVInformation->image) {
-                Storage::disk('public')->delete($cVInformation->image);
+            if ($cvInformation->image) {
+                Storage::disk('public')->delete($cvInformation->image);
             }
             $data['image'] = $request->file('image')->store('cv/images', 'public');
         }
         
         if ($request->hasFile('cv_file')) {
-            if ($cVInformation->cv_file) {
-                Storage::disk('public')->delete($cVInformation->cv_file);
+            if ($cvInformation->cv_file) {
+                Storage::disk('public')->delete($cvInformation->cv_file);
             }
             $data['cv_file'] = $request->file('cv_file')->store('cv/files', 'public');
         }
         
-        $cVInformation->update($data);
+        $cvInformation->update($data);
         
         return response()->json([
             'message' => 'CV bilgileri başarıyla güncellendi',
-            'data' => new CVInformationResource($cVInformation)
+            'data' => new CVInformationResource($cvInformation->fresh())
         ]);
     }
 
-    public function destroy(CVInformation $cVInformation): JsonResponse
+    public function destroy(CVInformation $cvInformation): JsonResponse
     {
-        $cVInformation->delete();
+        if ($cvInformation->image) {
+            Storage::disk('public')->delete($cvInformation->image);
+        }
+        
+        if ($cvInformation->cv_file) {
+            Storage::disk('public')->delete($cvInformation->cv_file);
+        }
+        
+        $cvInformation->delete();
         
         return response()->json([
             'message' => 'CV bilgileri başarıyla silindi'
