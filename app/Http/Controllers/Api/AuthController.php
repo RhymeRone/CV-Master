@@ -10,6 +10,13 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        // Zaten giriş yapılmış mı kontrol et
+        if (cache('admin_token') && $request->bearerToken() === cache('admin_token')) {
+            return response()->json([
+                'message' => 'Zaten giriş yapılmış'
+            ], 400);
+        }
+
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'

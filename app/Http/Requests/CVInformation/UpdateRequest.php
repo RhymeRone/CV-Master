@@ -26,7 +26,7 @@ class UpdateRequest extends FormRequest
             'slogan' => 'nullable|string|max:255',
             'birthday' => 'nullable|date',
             'degree' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:cv_information,email,' . $this->cVInformation->id,
+            'email' => 'required|email|unique:cv_information,email,' . $this->cVInformation?->id,
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'experience' => 'nullable|string',
@@ -39,8 +39,8 @@ class UpdateRequest extends FormRequest
             'facebook' => 'nullable|url|max:255',
             'instagram' => 'nullable|url|max:255',
             'website' => 'nullable|url|max:255',
-            'image' => 'nullable|image|max:2048',
-            'cv_file' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
+            'image' => 'nullable|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size'),
+            'cv_file' => 'nullable|file|mimes:'.implode(',', config('admin.upload.cv.mimes')).'|max:'.config('admin.upload.cv.max_size'),
         ];
     }
 
@@ -96,11 +96,13 @@ class UpdateRequest extends FormRequest
             'website.max' => 'Website URL\'si en fazla 255 karakter olabilir',
             
             'image.image' => 'Dosya bir resim olmalıdır',
-            'image.max' => 'Resim dosyası en fazla 2MB olabilir',
+            'image.max' => 'Resim dosyası en fazla '.config('admin.upload.image.max_size').'KB olabilir',
+            'image.min' => 'Resim dosyası en az '.config('admin.upload.image.min_size').'KB olmalıdır',
+            'image.mimes' => 'Resim dosyası '.implode(',', config('admin.upload.image.mimes')).' formatında olmalıdır',
             
             'cv_file.file' => 'CV bir dosya olmalıdır',
-            'cv_file.mimes' => 'CV dosyası pdf, doc veya docx formatında olmalıdır',
-            'cv_file.max' => 'CV dosyası en fazla 5MB olabilir',
+            'cv_file.mimes' => 'CV dosyası '.implode(',', config('admin.upload.cv.mimes')).' formatında olmalıdır',
+            'cv_file.max' => 'CV dosyası en fazla '.config('admin.upload.cv.max_size').'KB olabilir',
         ];
     }
 }
