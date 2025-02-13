@@ -32,18 +32,8 @@ Modern, kapsamlı ve test edilmiş bir CV/Portfolio REST API'si.
 
 ## 🧪 Test Kapsamı
 
-  ```bash
-  PHPUnit 10.5.10
-
-  Runtime:       PHP 8.2.12
-  Configuration: C:\CV-Master\phpunit.xml
-
-  ..................................................... 60 / 60 (100%)
-
-  Time: 00:01.123, Memory: 38.00 MB
-
-  OK (60 tests, 180 assertions)
-  ```
+  ![3BmibMDc5T](https://github.com/user-attachments/assets/1b4ae7e8-6183-448c-8b57-082c53400096)
+  ![z3LLBHlRu5](https://github.com/user-attachments/assets/02c03bf5-6644-4ddd-81eb-73747d1c9826)
 
 ## 🛠️ Teknolojiler
 
@@ -135,4 +125,4 @@ MIT License
 
 ## 👨‍💻 Geliştirici
 
-[Geliştirici Adı]
+[RhymeRone](https://github.com/RhymeRone)
