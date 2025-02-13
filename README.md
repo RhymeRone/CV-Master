@@ -76,42 +76,83 @@ Modern, kapsamlı ve test edilmiş bir CV/Portfolio REST API'si.
 
 ## 🔑 API Endpoints
 
-### Auth
-- POST /api/login
-- POST /api/logout
+## 🔑 API Endpoints
 
-### CV Information
-- GET /api/cv-information
-- POST /api/cv-information
-- PUT /api/cv-information/{id}
-- DELETE /api/cv-information/{id}
+### 🔐 Auth
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/login` | Admin girişi | No |
+| POST | `/api/logout` | Çıkış yapma | Yes |
 
-### Portfolio
-- GET /api/portfolios
-- POST /api/portfolios
-- PUT /api/portfolios/{id}
-- DELETE /api/portfolios/{id}
+### 📋 CV Information
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/cv-information` | Tüm CV bilgilerini listele | No |
+| GET | `/api/cv-information/{id}` | Belirli CV bilgisini göster | No |
+| POST | `/api/cv-information` | Yeni CV bilgisi oluştur | Yes |
+| PUT | `/api/cv-information/{id}` | CV bilgisini güncelle | Yes |
+| DELETE | `/api/cv-information/{id}` | CV bilgisini sil | Yes |
 
-### Services
-- GET /api/services
-- POST /api/services
-- PUT /api/services/{id}
-- DELETE /api/services/{id}
+### 💪 Skills
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/skills` | Tüm yetenekleri listele | No |
+| GET | `/api/skills/{id}` | Belirli yeteneği göster | No |
+| POST | `/api/skills` | Yeni yetenek oluştur | Yes |
+| PUT | `/api/skills/{id}` | Yeteneği güncelle | Yes |
+| DELETE | `/api/skills/{id}` | Yeteneği sil | Yes |
 
-### Skills
-- GET /api/skills
-- POST /api/skills
-- PUT /api/skills/{id}
-- DELETE /api/skills/{id}
+### 👨‍💼 Experience
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/experiences` | Tüm deneyimleri listele | No |
+| GET | `/api/experiences/{id}` | Belirli deneyimi göster | No |
+| POST | `/api/experiences` | Yeni deneyim oluştur | Yes |
+| PUT | `/api/experiences/{id}` | Deneyimi güncelle | Yes |
+| DELETE | `/api/experiences/{id}` | Deneyimi sil | Yes |
 
-### Testimonials
-- GET /api/testimonials
-- POST /api/testimonials
-- PUT /api/testimonials/{id}
-- DELETE /api/testimonials/{id}
+### 🛠️ Services
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/services` | Tüm hizmetleri listele | No |
+| GET | `/api/services/{id}` | Belirli hizmeti göster | No |
+| POST | `/api/services` | Yeni hizmet oluştur | Yes |
+| PUT | `/api/services/{id}` | Hizmeti güncelle | Yes |
+| DELETE | `/api/services/{id}` | Hizmeti sil | Yes |
 
-### Contact
-- POST /api/contact
+### 💼 Portfolio
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/portfolios` | Tüm portfolyo projelerini listele | No |
+| GET | `/api/portfolios/{id}` | Belirli portfolyo projesini göster | No |
+| POST | `/api/portfolios` | Yeni portfolyo projesi oluştur | Yes |
+| PUT | `/api/portfolios/{id}` | Portfolyo projesini güncelle | Yes |
+| DELETE | `/api/portfolios/{id}` | Portfolyo projesini sil | Yes |
+
+### 📁 Portfolio Categories
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/portfolio-categories` | Tüm kategorileri listele | No |
+| GET | `/api/portfolio-categories/{id}` | Belirli kategoriyi göster | No |
+| POST | `/api/portfolio-categories` | Yeni kategori oluştur | Yes |
+| PUT | `/api/portfolio-categories/{id}` | Kategoriyi güncelle | Yes |
+| DELETE | `/api/portfolio-categories/{id}` | Kategoriyi sil | Yes |
+
+### 👥 Testimonials
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/testimonials` | Tüm referansları listele | No |
+| GET | `/api/testimonials/{id}` | Belirli referansı göster | No |
+| POST | `/api/testimonials` | Yeni referans oluştur | Yes |
+| PUT | `/api/testimonials/{id}` | Referansı güncelle | Yes |
+| DELETE | `/api/testimonials/{id}` | Referansı sil | Yes |
+
+### 📧 Contact
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/contact` | İletişim formu mesajı gönder | No* |
+
+> *Contact endpoint'i rate limiting ile korunmaktadır.
 
 ## 🧪 Testleri Çalıştırma
 
