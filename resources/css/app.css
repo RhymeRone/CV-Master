@@ -1,3 +1,13 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Node Modules CSS */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import "~font-awesome/css/font-awesome.min.css";
+@import "../fonts/iconic/css/material-design-iconic-font.min.css";
+@import "~animate.css/animate.min.css";
+@import "../vendor/css-hamburgers/hamburgers.min.css";
+@import "~animsition/dist/css/animsition.min.css";
+@import "~select2/dist/css/select2.min.css";
+@import "~daterangepicker/daterangepicker.css";
+
+/* Custom CSS */
+@import 'pages/login/util.css';
+@import 'pages/login/main.css';
