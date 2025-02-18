@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Http\Requests\PortfolioCategory;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'icon' => 'required|string|max:50',
+            'cv_information_id' => 'required|exists:cv_information,id'
+            
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Kategori adı gereklidir',
+            'icon.required' => 'Kategori ikonu gereklidir',
+            'icon.max' => 'İkon ismi çok uzun'
+        ];
+    }
+} 
