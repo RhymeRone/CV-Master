@@ -3,7 +3,7 @@
 namespace App\Http\Requests\CVInformation;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Log;
 class UpdateRequest extends FormRequest
 {
     /**
@@ -26,11 +26,11 @@ class UpdateRequest extends FormRequest
             'slogan' => 'nullable|string|max:255',
             'birthday' => 'nullable|date',
             'degree' => 'nullable|string|max:255',
-            'email' => 'required|email|unique:cv_information,email,' . $this->cVInformation?->id,
+            'email' => 'required|email',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'experience' => 'nullable|string',
-            'freelance' => 'nullable|in:available,unavailable',
+            'freelance' => 'nullable|string',
             'clients' => 'nullable|integer|min:0',
             'projects' => 'nullable|integer|min:0',
             'linkedin' => 'nullable|url|max:255',
@@ -49,7 +49,6 @@ class UpdateRequest extends FormRequest
         return [
             'email.required' => 'E-posta adresi gereklidir',
             'email.email' => 'Geçerli bir e-posta adresi giriniz',
-            'email.unique' => 'Bu e-posta adresi zaten kullanılmakta',
             
             'name.string' => 'İsim metin formatında olmalıdır',
             'name.max' => 'İsim en fazla 255 karakter olabilir',
@@ -69,7 +68,7 @@ class UpdateRequest extends FormRequest
             
             'experience.string' => 'Deneyim metin formatında olmalıdır',
             
-            'freelance.in' => 'Serbest çalışma durumu available veya unavailable olmalıdır',
+            'freelance.string' => 'Freelance durumu string formatında olmalıdır',
             
             'clients.integer' => 'Müşteri sayısı tam sayı olmalıdır',
             'clients.min' => 'Müşteri sayısı en az 0 olmalıdır',

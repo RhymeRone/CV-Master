@@ -56,6 +56,7 @@ class CVInformationTest extends TestCase
                     '*' => [
                         'id',
                         'name',
+                        'position',
                         'slogan',
                         'birthday',
                         'degree',

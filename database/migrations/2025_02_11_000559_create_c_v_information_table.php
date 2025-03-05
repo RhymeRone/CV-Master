@@ -16,18 +16,19 @@ return new class extends Migration
             
             // Kişisel Bilgiler
             $table->string('name')->nullable()->comment('Adı');
+            $table->string('position')->nullable()->comment('Pozisyon');
             $table->string('slogan')->nullable()->comment('Slogan (Virgülle ayırınız)');
             $table->date('birthday')->nullable()->comment('Doğum Tarihi');
             $table->string('degree')->nullable()->comment('En Son Lisans Derecesi');
             
             // İletişim Bilgileri
-            $table->string('email')->unique()->comment('E-posta adresi');
+            $table->string('email')->comment('E-posta adresi');
             $table->string('phone')->nullable()->comment('Telefon numarası');
             $table->text('address')->nullable()->comment('Adres');
             
             // Profesyonel Bilgiler
             $table->text('experience')->nullable()->comment('İş deneyimi');
-            $table->enum('freelance', ['available', 'unavailable'])->default('unavailable')->comment('Serbest çalışma durumu')  ;
+            $table->string('freelance')->nullable()->comment('Serbest çalışma durumu');
             $table->integer('clients')->default(0)->unsigned()->comment('Müşteri sayısı');
             $table->integer('projects')->default(0)->unsigned()->comment('Proje sayısı');
             
@@ -42,6 +43,9 @@ return new class extends Migration
             // Medya Dosyaları
             $table->string('image')->nullable()->comment('Profil fotoğrafı');
             $table->string('cv_file')->nullable()->comment('CV dosyası');
+
+            // Aktiflik Durumu
+            $table->boolean('is_active')->nullable()->default(false)->comment('Aktiflik Durumu');
             
             $table->timestamps();
             $table->softDeletes(); // Silinen kayıtları tutmak için

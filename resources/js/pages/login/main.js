@@ -1,6 +1,3 @@
-import AuthController from '../../controllers/auth.controller';
-import FormManager from '../../managers/FormManager';
-
 (function ($) {
     "use strict";
 

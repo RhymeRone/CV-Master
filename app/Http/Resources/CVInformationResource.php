@@ -18,6 +18,7 @@ class CVInformationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'position' => $this->position,
             'slogan' => $this->slogan ? explode(',', $this->slogan) : [],
             'birthday' => $this->birthday,
             'degree' => $this->degree,
@@ -38,6 +39,7 @@ class CVInformationResource extends JsonResource
             ],
             'image' => $this->image ? Storage::url($this->image) : null,
             'cv_file' => $this->cv_file ? Storage::url($this->cv_file) : null,
+            'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

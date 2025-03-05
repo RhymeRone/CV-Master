@@ -1,0 +1,4 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import 'pages/admin/kaiadmin.min.css';
+@import 'pages/admin/plugins.min.css';
+@import 'pages/admin/fonts.min.css';

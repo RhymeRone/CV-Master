@@ -17,6 +17,7 @@ class CVInformation extends Model
     protected $fillable = [
         // Kişisel Bilgiler
         'name',
+        'position',
         'slogan',
         'birthday',
         'degree',
@@ -43,6 +44,9 @@ class CVInformation extends Model
         // Medya Dosyaları
         'image',
         'cv_file',
+
+        // Aktiflik Durumu
+        'is_active',
     ];
 
     protected $casts = [
@@ -50,6 +54,7 @@ class CVInformation extends Model
         'clients' => 'integer',
         'projects' => 'integer',
         'freelance' => 'string',
+        'is_active' => 'boolean',
     ];
 
     // Slogan'ı array olarak almak için
@@ -57,6 +62,7 @@ class CVInformation extends Model
     {
         return explode(',', $this->slogan);
     }
+
 
     public function skills()
     {
@@ -86,6 +92,11 @@ class CVInformation extends Model
     public function portfolioCategories()
     {
         return $this->hasMany(PortfolioCategory::class);
+    }
+
+    public function getActiveCv()
+    {
+        return $this->where('is_active', true)->first();
     }
 
     protected static function boot()

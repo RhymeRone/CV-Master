@@ -1,17 +1,17 @@
+// Önce jQuery ve temel bağımlılıkları yükle
 import './bootstrap';
-import 'animsition';
+
+// jQuery eklentileri
 import 'select2';
 import 'daterangepicker';
 import 'countdowntime';
+
+
+// Bootstrap ve diğer bağımlılıklar
+import 'animsition';
+
 // En son custom JS'ler
 import './pages/login/main'; 
-import { APP_CONFIG } from './config/app.config';
-import FormManager from './managers/FormManager';
 
-// SweetAlert varsayılan ayarları
-Swal.defaultOptions = APP_CONFIG.UI.notifications;
 
-// Form manager'ı başlat
-document.addEventListener('DOMContentLoaded', () => {
-    FormManager.initialize();
-});
+

@@ -57,5 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('portfolios', PortfolioController::class)->except(['index', 'show']);
     Route::apiResource('portfolio-categories', PortfolioCategoryController::class)->except(['index', 'show']);
     Route::apiResource('testimonials', TestimonialController::class)->except(['index', 'show']);
+
+    Route::post('cv-information/set-active', [CVInformationController::class, 'setActive']);
 });
 

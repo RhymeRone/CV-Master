@@ -12,10 +12,9 @@
 </head>
 <body>
     <div class="limiter">
-        <div class="container-login100" style="background-image: url('{{ asset('images/bg-01.jpg') }}');">
+        <div class="container-login100" style="background-image: url('{{ asset('assets/img/bg-01.jpg') }}');">
             <div class="wrap-login100">
-                <form class="login100-form validate-form" method="POST" action="{{ route('login') }}">
-                    @csrf
+                <form id="loginForm" class="login100-form" autocomplete="off">
                     <span class="login100-form-logo">
                         <i class="zmdi zmdi-landscape"></i>
                     </span>
@@ -24,28 +23,18 @@
                         Hoşgeldin
                     </span>
 
-                    <div class="wrap-input100 validate-input" data-validate="Email gerekli">
-                        <input class="input100" type="email" name="email" value="{{ old('email') }}" placeholder="Email">
+                    <div class="wrap-input100">
+                        <input class="input100" type="email" name="email" placeholder="Email">
                         <span class="focus-input100" data-placeholder="&#xf207;"></span>
-                        @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
                     </div>
 
-                    <div class="wrap-input100 validate-input" data-validate="Şifre gerekli">
+                    <div class="wrap-input100">
                         <input class="input100" type="password" name="password" placeholder="Şifre">
                         <span class="focus-input100" data-placeholder="&#xf191;"></span>
-                        @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                        @enderror
                     </div>
 
                     <div class="contact100-form-checkbox">
-                        <input class="input-checkbox100" id="remember" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                        <input class="input-checkbox100" id="remember" type="checkbox" name="remember">
                         <label class="label-checkbox100" for="remember">
                             Beni Hatırla
                         </label>
