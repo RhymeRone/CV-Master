@@ -24,8 +24,9 @@ class CVInformationController extends Controller
 
     public function store(StoreRequest $request): JsonResponse
     {
+        Log::info("store", $request->all());
         $data = $request->validated();
-
+        Log::info("store", $data);
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('cv/images', 'public');
         }
@@ -51,9 +52,8 @@ class CVInformationController extends Controller
 
     public function update(UpdateRequest $request, CVInformation $cvInformation): JsonResponse
     {
-        Log::info($request->all());
         $data = $request->validated();
-        Log::info($data);
+
 
         if ($request->hasFile('image')) {
             if ($cvInformation->image) {
@@ -94,12 +94,10 @@ class CVInformationController extends Controller
         ]);
     }
 
-    public function setActive(Request $request): JsonResponse
+    public function setActive(CVInformation $cvInformation): JsonResponse
     {
-        // Önce tüm CV'leri pasif yap
         CVInformation::where('is_active', true)->update(['is_active' => false]);
 
-        $cvInformation = CVInformation::findOrFail($request->cv_id);
         $cvInformation->is_active = true;
         $cvInformation->save();
 

@@ -13,7 +13,11 @@ function disposeModal(modalId) {
 
         // İnputları temizle
         document.querySelectorAll('.modal-body input').forEach(input => {
-            input.value = '';
+            if(input.type === "radio" || input.type === "checkbox") {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
         });
 
         // Success ve Error mesajlarını temizle
@@ -45,10 +49,6 @@ function disposeModal(modalId) {
  */
 function showModal(modalId) {
     try {
-        // Önce temizle
-        disposeModal(modalId);
-        
-        // Sonra bootstrap ile aç
         setTimeout(() => {
             const modalEl = document.querySelector(modalId);
             if (modalEl) {

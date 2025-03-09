@@ -24,13 +24,14 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'nullable|string|max:255',
             'slogan' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
             'birthday' => 'nullable|date',
             'degree' => 'nullable|string|max:255',
             'email' => 'required|email',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'experience' => 'nullable|string',
-            'freelance' => 'nullable|string',
+            'freelance' => 'nullable|boolean',
             'clients' => 'nullable|integer|min:0',
             'projects' => 'nullable|integer|min:0',
             'linkedin' => 'nullable|url|max:255',
@@ -41,6 +42,7 @@ class UpdateRequest extends FormRequest
             'website' => 'nullable|url|max:255',
             'image' => 'nullable|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size'),
             'cv_file' => 'nullable|file|mimes:'.implode(',', config('admin.upload.cv.mimes')).'|max:'.config('admin.upload.cv.max_size'),
+            'is_active' => 'nullable|boolean',
         ];
     }
 
@@ -55,6 +57,9 @@ class UpdateRequest extends FormRequest
             
             'slogan.string' => 'Slogan metin formatında olmalıdır',
             'slogan.max' => 'Slogan en fazla 255 karakter olabilir',
+
+            'position.string' => 'Pozisyon metin formatında olmalıdır',
+            'position.max' => 'Pozisyon en fazla 255 karakter olabilir',
             
             'birthday.date' => 'Geçerli bir tarih giriniz',
             
@@ -68,7 +73,7 @@ class UpdateRequest extends FormRequest
             
             'experience.string' => 'Deneyim metin formatında olmalıdır',
             
-            'freelance.string' => 'Freelance durumu string formatında olmalıdır',
+            'freelance.boolean' => 'Freelance durumu boolean formatında olmalıdır',
             
             'clients.integer' => 'Müşteri sayısı tam sayı olmalıdır',
             'clients.min' => 'Müşteri sayısı en az 0 olmalıdır',
@@ -102,6 +107,8 @@ class UpdateRequest extends FormRequest
             'cv_file.file' => 'CV bir dosya olmalıdır',
             'cv_file.mimes' => 'CV dosyası '.implode(',', config('admin.upload.cv.mimes')).' formatında olmalıdır',
             'cv_file.max' => 'CV dosyası en fazla '.config('admin.upload.cv.max_size').'KB olabilir',
+
+            'is_active.boolean' => 'Aktiflik durumu boolean formatında olmalıdır',
         ];
     }
 }

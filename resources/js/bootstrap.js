@@ -27,5 +27,10 @@ Swal.defaultOptions = integratorConfig.UI.notifications;
 document.addEventListener('DOMContentLoaded', () => {
     const integrator = new ApiFormIntegrator(integratorConfig);
     integrator.initialize();
+    window.integrator = integrator;
+    window.apiService = new ApiFormIntegrator.ApiService({
+      baseUrl: 'http://127.0.0.1:8000/api',
+      sweetalert2: true,
+    });
     
   });

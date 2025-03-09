@@ -28,7 +28,7 @@ return new class extends Migration
             
             // Profesyonel Bilgiler
             $table->text('experience')->nullable()->comment('İş deneyimi');
-            $table->string('freelance')->nullable()->comment('Serbest çalışma durumu');
+            $table->boolean('freelance')->nullable()->default(false)->comment('Serbest çalışma durumu');
             $table->integer('clients')->default(0)->unsigned()->comment('Müşteri sayısı');
             $table->integer('projects')->default(0)->unsigned()->comment('Proje sayısı');
             

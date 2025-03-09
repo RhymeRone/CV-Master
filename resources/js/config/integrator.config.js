@@ -183,7 +183,7 @@ export const integratorConfig = {
             max: 'Adres en fazla 255 karakter olmalıdır.'
           }
         },
-      
+
         // Profesyonel Bilgiler
         experience: {
           rules: [
@@ -230,16 +230,14 @@ export const integratorConfig = {
         freelance: {
           rules: [
             'required',
-            'string',
-            'in:available,unavailable'
+            'boolean',
           ],
           messages: {
             required: 'Freelance durumu alanı zorunludur.',
-            string: 'Freelance durumu geçerli bir değer olmalıdır.',
-            in: 'Freelance durumu geçerli bir değer olmalıdır.'
+            boolean: 'Freelance durumu boolean formatında olmalıdır.',
           }
         },
-      
+
         // Sosyal Medya Bağlantıları
         linkedin: {
           rules: [
@@ -313,7 +311,7 @@ export const integratorConfig = {
             regex: 'Geçerli bir website adresi giriniz.'
           }
         },
-      
+
         // Dosya Alanları
         image: {
           rules: [
@@ -349,7 +347,12 @@ export const integratorConfig = {
         }
       },
       actions: {
+        onSubmit: (formData, config) => {
+          const formDataObject = Object.fromEntries(formData.entries());
+          console.log('Form Verileri:', formDataObject);
+        },
         onSuccess: (response) => {
+          console.log(response);
           disposeModal('#addRowModal');
           loadCvList();
           return true;
@@ -373,13 +376,14 @@ export const integratorConfig = {
       selector: '#cvEditForm', // Formun DOM'daki seçicisi (ID, class, vs.)
       endpoint: '/cv-information/{id}',
       method: 'POST', // HTTP methodu (GET, POST, PUT, DELETE, vs.)
+      useFormData: true,
       sweetalert2: true, // SweetAlert2 kullanımını etkinleştirir false ile console hataları gösterir.
       headers: {
         'Content-Type': 'multipart/form-data', // İçerik tipi
         'X-HTTP-Method-Override': 'PUT',
         'X-CSRF-TOKEN': typeof document !== 'undefined'
-        ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-        : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
       },
       preventRedirect: true, // Başarılı istekten sonra yönlendirmeyi engeller
       validation: true, // validasyon kontrolünü aktifleştir
@@ -389,6 +393,60 @@ export const integratorConfig = {
         errorClass: 'is-invalid',
         successClass: 'is-valid',
         errorColor: 'red',
+      },
+      getData: {
+        endpoint: 'cv-information/{id}',
+        autoFill: false,
+        mapping: {
+          'name': 'name',
+          'image': [{
+            attribute: 'src',
+            selector: '#currentImagePreview',
+          },
+          {
+            attribute: 'value',
+            selector: '#current_image',
+          },
+          {
+            attribute: 'href',
+            selector: '#currentImageLink',
+            callback: (element, value, form) => {
+              const noImgText = form.querySelector('#noImageText');
+              if (value) {
+                element.style.display = 'block';
+                if (noImgText) noImgText.style.display = 'none';
+              } else {
+                element.style.display = 'none';
+                if (noImgText) noImgText.style.display = 'block';
+              }
+            }
+          }],
+          'cv_file': [{
+            attribute: 'value',
+            selector: '#current_cv_file',
+          },
+          {
+            attribute: 'href',
+            selector: '#currentCvFileLink',
+            callback: (element, value, form) => {
+              const noCvText = form.querySelector('#noCvFileText');
+              if (value) {
+                element.style.display = 'block';
+                if (noCvText) noCvText.style.display = 'none';
+              } else {
+                element.style.display = 'none';
+                if (noCvText) noCvText.style.display = 'block';
+              }
+            }
+          }],
+          'social_media.linkedin': 'linkedin',
+          'social_media.github': 'github',
+          'social_media.twitter': 'twitter',
+          'social_media.facebook': 'facebook',
+          'social_media.instagram': 'instagram',
+          'social_media.website': 'website',
+          '*': true
+        }
       },
       fields: {
         // Kişisel Bilgiler
@@ -485,7 +543,7 @@ export const integratorConfig = {
             max: 'Adres en fazla 255 karakter olmalıdır.'
           }
         },
-      
+
         // Profesyonel Bilgiler
         experience: {
           rules: [
@@ -529,15 +587,13 @@ export const integratorConfig = {
         freelance: {
           rules: [
             'nullable',
-            'string',
-            'in:available,unavailable'
+            'boolean',
           ],
           messages: {
-            string: 'Freelance durumu geçerli bir değer olmalıdır.',
-            in: 'Freelance durumu geçerli bir değer olmalıdır.'
+            boolean: 'Freelance durumu boolean formatında olmalıdır.',
           }
         },
-      
+
         // Sosyal Medya Bağlantıları
         linkedin: {
           rules: [
@@ -605,7 +661,7 @@ export const integratorConfig = {
             regex: 'Geçerli bir website adresi giriniz.'
           }
         },
-      
+
         // Dosya Alanları
         image: {
           rules: [
@@ -640,8 +696,17 @@ export const integratorConfig = {
       },
       actions: {
         onSubmit: (formData, config) => {
-          config.endpoint = config.endpoint.replace('{id}', formData.id);
-          console.log(formData);
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+          // FormData nesnesini döngüye alarak tüm verileri konsola yazdır
+
+          // // Boş dosya alanlarını formData'dan çıkar
+          // if (document.getElementById('editCvFile').files.length === 0) {
+          //   formData.delete('cv_file');
+          // }
+
+          // if (document.getElementById('editImage').files.length === 0) {
+          //   formData.delete('image');
+          // }
         },
         onSuccess: (response) => {
           disposeModal('#cvEditModal');
@@ -733,7 +798,7 @@ export const integratorConfig = {
     notifications: {
       position: 'center', // Bildirimin konumu
       timer: 2000, // Bildirimin gösterim süresi (ms)
-      showConfirmButton: false,
+      showConfirmButton: true,
     },
     validation: {
       showErrors: true,
