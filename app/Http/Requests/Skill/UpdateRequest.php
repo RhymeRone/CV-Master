@@ -24,8 +24,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'level' => 'sometimes|required|integer|min:0|max:100',
-            'color' => 'sometimes|required|string|size:7|starts_with:#',
-            'cv_information_id' => 'sometimes|required|exists:cv_information,id'
+            'color' => 'sometimes|required|string|size:7|starts_with:#'
         ];
     }
 

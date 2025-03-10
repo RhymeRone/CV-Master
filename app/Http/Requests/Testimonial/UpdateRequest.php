@@ -17,8 +17,7 @@ class UpdateRequest extends FormRequest
             'name' => 'sometimes|required|string|max:255',
             'comment' => 'sometimes|required|string',
             'job' => 'sometimes|required|string|max:255',
-            'image' => 'sometimes|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size'),
-            'cv_information_id' => 'sometimes|required|exists:cv_information,id'
+            'image' => 'sometimes|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size')
         ];
     }
 

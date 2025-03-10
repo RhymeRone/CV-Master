@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('link')->nullable()->comment('Proje linki');
             $table->string('image')->comment('Portfolyo görseli');
             
-            // İlişki
-            $table->foreignId('cv_information_id')
-                ->constrained('cv_information')
-                ->onDelete('cascade')
-                ->comment('CV bilgisi ID');
+            // // İlişki
+            // $table->foreignId('cv_information_id')
+            //     ->constrained('cv_information')
+            //     ->onDelete('cascade')
+            //     ->comment('CV bilgisi ID');
             
             $table->timestamps();
             $table->softDeletes();

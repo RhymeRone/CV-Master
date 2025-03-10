@@ -22,8 +22,14 @@ class Skill extends Model
         'level' => 'integer'
     ];
 
-    public function cvInformation()
+    protected static function boot()
     {
-        return $this->belongsTo(CVInformation::class);
+        parent::boot();
+
+        static::deleting(function ($skill) {
+            CVAssignment::where('assignable_type', Skill::class)
+                ->where('assignable_id', $skill->id)
+                ->delete();
+        });
     }
 }

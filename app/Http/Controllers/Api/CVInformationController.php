@@ -24,9 +24,7 @@ class CVInformationController extends Controller
 
     public function store(StoreRequest $request): JsonResponse
     {
-        Log::info("store", $request->all());
         $data = $request->validated();
-        Log::info("store", $data);
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('cv/images', 'public');
         }
@@ -104,6 +102,21 @@ class CVInformationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'CV başarıyla aktifleştirildi',
+            'data' => new CVInformationResource($cvInformation)
+        ]);
+    }
+    public function getActive(): JsonResponse
+    {
+        $cvInformation = CVInformation::where('is_active', true)->first();
+       
+        // Aktif CV yoksa boş bir yanıt döndür (200 OK durum koduyla)
+        if (!$cvInformation) {
+            return response()->json([
+                'message' => 'Aktif CV bulunamadı',
+                'data' => null
+            ], 200); // 404 yerine 200 durum kodu kullan
+        }
+        return response()->json([
             'data' => new CVInformationResource($cvInformation)
         ]);
     }

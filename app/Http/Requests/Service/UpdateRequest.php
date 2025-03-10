@@ -16,8 +16,7 @@ class UpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
-            'icon' => 'sometimes|required|string|max:50',
-            'cv_information_id' => 'sometimes|required|exists:cv_information,id'
+            'icon' => 'sometimes|required|string|max:50'
         ];
     }
 

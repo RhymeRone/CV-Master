@@ -17,8 +17,14 @@ class Service extends Model
         'cv_information_id'
     ];
 
-    public function cvInformation()
+    protected static function boot()
     {
-        return $this->belongsTo(CVInformation::class);
+        parent::boot();
+
+        static::deleting(function ($service) {
+            CVAssignment::where('assignable_type', Service::class)
+                ->where('assignable_id', $service->id)
+                ->delete();
+        });
     }
 } 

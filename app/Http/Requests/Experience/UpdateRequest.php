@@ -16,9 +16,8 @@ class UpdateRequest extends FormRequest
         return [
             'position' => 'sometimes|required|string|max:255',
             'company' => 'sometimes|required|string|max:255',
-            'start_year' => 'sometimes|required|integer|min:1900|max:'.(date('Y')+1),
-            'end_year' => 'nullable|integer|min:1900|max:'.(date('Y')+1).'|gte:start_year',
-            'cv_information_id' => 'sometimes|required|exists:cv_information,id'
+            'start_date' => 'required|date|before:end_date|after:1900-01-01',
+            'end_date' => 'nullable|date|after:start_date|before:'.date('Y-m-d', strtotime('+1 year')),
         ];
     }
 
@@ -27,14 +26,14 @@ class UpdateRequest extends FormRequest
         return [
             'position.required' => 'Pozisyon adı gereklidir',
             'company.required' => 'Şirket adı gereklidir',
-            'start_year.required' => 'Başlangıç yılı gereklidir',
-            'start_year.integer' => 'Başlangıç yılı sayı olmalıdır',
-            'start_year.min' => 'Başlangıç yılı 1900\'den küçük olamaz',
-            'start_year.max' => 'Başlangıç yılı gelecek yıldan büyük olamaz',
-            'end_year.integer' => 'Bitiş yılı sayı olmalıdır',
-            'end_year.min' => 'Bitiş yılı 1900\'den küçük olamaz',
-            'end_year.max' => 'Bitiş yılı gelecek yıldan büyük olamaz',
-            'end_year.gte' => 'Bitiş yılı başlangıç yılından küçük olamaz'
+            'start_date.required' => 'Başlangıç tarihi gereklidir',
+            'start_date.date' => 'Başlangıç tarihi tarih formatında olmalıdır',
+            'start_date.before' => 'Başlangıç tarihi bitiş tarihinden önce olmalıdır',
+            'start_date.after' => 'Başlangıç tarihi 1900\'den küçük olamaz',
+            'end_date.date' => 'Bitiş tarihi tarih formatında olmalıdır',
+            'end_date.after' => 'Bitiş tarihi başlangıç tarihinden sonra olmalıdır',
+            'end_date.before' => 'Bitiş tarihi gelecek yıldan büyük olamaz',
+            'end_date.gte' => 'Bitiş tarihi başlangıç tarihinden küçük olamaz'
         ];
     }
 } 

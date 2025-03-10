@@ -32,6 +32,12 @@ class PortfolioCategory extends Model
                 $category->slug = $category->generateUniqueSlug($category->name);
             }
         });
+
+        static::deleting(function ($category) {
+            CVAssignment::where('assignable_type', PortfolioCategory::class)
+                ->where('assignable_id', $category->id)
+                ->delete();
+        });
     }
 
     // Benzersiz slug oluşturma metodu
@@ -47,11 +53,6 @@ class PortfolioCategory extends Model
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public function cvInformation()
-    {
-        return $this->belongsTo(CVInformation::class);
     }
 
     public function portfolios()

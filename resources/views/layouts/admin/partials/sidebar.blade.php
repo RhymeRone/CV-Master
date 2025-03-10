@@ -3,8 +3,8 @@
                 <!-- Logo Header -->
                 <div class="logo-header" data-background-color="dark">
                     <a href="{{ route('admin.dashboard') }}" class="logo">
-                        <img src="{{ asset('assets/img/admin/logo_light.svg') }}" alt="navbar brand"
-                            class="navbar-brand" height="20" />
+                        <img src="{{ asset('assets/img/admin/logo_light.svg') }}" alt="navbar brand" class="navbar-brand"
+                            height="20" />
                     </a>
                     <div class="nav-toggle">
                         <button class="btn btn-toggle toggle-sidebar">
@@ -37,8 +37,20 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('admin.cvlist') }}">
-                                <i class="fas fa-layer-group"></i>
+                                <i class="fas fa-user"></i>
                                 <p>CV Listesi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.experiences') }}">
+                                <i class="fas fa-briefcase"></i>
+                                <p>Deneyimler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.services') }}">
+                                <i class="fas fa-cog"></i>
+                                <p>Hizmetler</p>
                             </a>
                         </li>
                     </ul>

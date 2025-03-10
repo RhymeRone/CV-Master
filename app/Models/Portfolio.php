@@ -19,10 +19,10 @@ class Portfolio extends Model
         'cv_information_id'
     ];
 
-    public function cvInformation()
-    {
-        return $this->belongsTo(CVInformation::class);
-    }
+    // public function cvInformation()
+    // {
+    //     return $this->belongsTo(CVInformation::class);
+    // }
 
     public function categories()
     {
@@ -37,6 +37,9 @@ class Portfolio extends Model
             if ($portfolio->image) {
                 Storage::disk('public')->delete($portfolio->image);
             }
+            CVAssignment::where('assignable_type', Portfolio::class)
+                ->where('assignable_id', $portfolio->id)
+                ->delete();
         });
     }
 } 

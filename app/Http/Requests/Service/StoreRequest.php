@@ -16,8 +16,7 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'icon' => 'required|string|max:50',
-            'cv_information_id' => 'required|exists:cv_information,id'
+            'icon' => 'required|string|max:50'
         ];
     }
 

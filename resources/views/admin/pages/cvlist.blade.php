@@ -2,29 +2,16 @@
 
 @section('title', 'CV Listesi')
 
+@section('route', route('admin.cvlist'))
+
 @section('content')
     <div class="page-inner">
-        <div class="page-header">
-            <h4 class="page-title">Giriş</h4>
-            <ul class="breadcrumbs">
-                <li class="nav-home">
-                    <a href="#">
-                        <i class="icon-home"></i>
-                    </a>
-                </li>
-                <li class="separator">
-                    <i class="icon-arrow-right"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">CV Listesi</a>
-                </li>
-            </ul>
-        </div>
+        @include('layouts.admin.partials.page-header')
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">CV Listesi</h4>
+                        <h4 class="card-title">Özgeçmiş Listeniz</h4>
                         <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
                             data-bs-target="#addRowModal">
                             <i class="fa fa-plus"></i>

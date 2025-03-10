@@ -14,12 +14,10 @@ class PortfolioCategoryResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'icon' => $this->icon,
-            'cv_information_id' => $this->cv_information_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
             'portfolios' => PortfolioResource::collection($this->whenLoaded('portfolios')),
-            'cv_information' => new CVInformationResource($this->whenLoaded('cvInformation')),
         ];
     }
 } 

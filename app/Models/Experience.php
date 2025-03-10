@@ -13,18 +13,52 @@ class Experience extends Model
     protected $fillable = [
         'position',
         'company',
-        'start_year',
-        'end_year',
+        'start_date',
+        'end_date',
         'cv_information_id'
     ];
 
     protected $casts = [
-        'start_year' => 'integer',
-        'end_year' => 'integer'
+        'start_date' => 'date',
+        'end_date' => 'date'
     ];
 
-    public function cvInformation()
+    protected static function boot()
     {
-        return $this->belongsTo(CVInformation::class);
+        parent::boot();
+
+        static::deleting(function ($experience) {
+            // Deneyim silindiğinde, tüm atamalarını temizle
+            CVAssignment::where('assignable_type', Experience::class)
+                ->where('assignable_id', $experience->id)
+                ->delete();
+        });
     }
-} 
+
+
+    // Tarih formatını otomatik dönüştürür
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+
+    public function getStartDateAttribute($value)
+    {
+        // Veritabanından alınan değeri, form için uygun formata dönüştür
+        return $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+
+    public function getEndDateAttribute($value)
+    {
+        return $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+    // public function cvInformation()
+    // {
+    //     return $this->belongsTo(CVInformation::class);
+    // }
+}

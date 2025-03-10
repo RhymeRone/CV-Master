@@ -13,13 +13,11 @@ class ExperienceResource extends JsonResource
             'id' => $this->id,
             'position' => $this->position,
             'company' => $this->company,
-            'start_year' => $this->start_year,
-            'end_year' => $this->end_year,
-            'cv_information_id' => $this->cv_information_id,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-            'cv_information' => new CVInformationResource($this->whenLoaded('cvInformation')),
         ];
     }
 } 

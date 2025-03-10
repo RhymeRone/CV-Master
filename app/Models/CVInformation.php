@@ -21,18 +21,18 @@ class CVInformation extends Model
         'slogan',
         'birthday',
         'degree',
-        
+
         // İletişim Bilgileri
         'email',
         'phone',
         'address',
-        
+
         // Profesyonel Bilgiler
         'experience',
         'freelance',
         'clients',
         'projects',
-        
+
         // Sosyal Medya Linkleri
         'linkedin',
         'github',
@@ -40,7 +40,7 @@ class CVInformation extends Model
         'facebook',
         'instagram',
         'website',
-        
+
         // Medya Dosyaları
         'image',
         'cv_file',
@@ -63,36 +63,168 @@ class CVInformation extends Model
         return explode(',', $this->slogan);
     }
 
+    // CVInformation.php içinde, diğer metotların yanına
 
-    public function skills()
+    // Birthday için mutator
+    public function setBirthdayAttribute($value)
     {
-        return $this->hasMany(Skill::class);
+        $this->attributes['birthday'] = $value ? date('Y-m-d', strtotime($value)) : null;
+    }
+    public function getBirthdayAttribute($value)
+    {
+        return $value ? date('Y-m-d', strtotime($value)) : null;
     }
 
-    public function experiences()
+    // ----------------------------------- Componentler için -----------------------------------
+    public function assignments()
     {
-        return $this->hasMany(Experience::class);
+        return $this->hasMany(CVAssignment::class, 'cv_information_id');
     }
 
-    public function services()
+    public function getComponent($type)
     {
-        return $this->hasMany(Service::class);
+        return $this->assignments()
+            ->where('assignable_type', $type)
+            ->orderBy('order')
+            ->get()
+            ->map(function ($assignment) {
+                return $assignment->assignable;
+            });
+    }
+    public function getComponents()
+    {
+        return $this->assignments()
+            ->orderBy('order')
+            ->get()
+            ->map(function ($assignment) {
+                return $assignment->assignable;
+            });
+    }
+    public function setComponent($type, $data)
+    {
+        $this->assignments()->create([
+            'assignable_type' => $type,
+            'assignable_id' => $data->id,
+        ]);
+    }
+    public function deleteComponent($type)
+    {
+        $this->assignments()->where('assignable_type', $type)->delete();
+    }
+    public function updateComponent($type, $data)
+    {
+        $this->assignments()->where('assignable_type', $type)->update([
+            'assignable_id' => $data->id,
+        ]);
+    }
+    public function reorderComponent($type, $order)
+    {
+        $this->assignments()->where('assignable_type', $type)->update([
+            'order' => $order,
+        ]);
+    }
+    public function getComponentOrder($type)
+    {
+        return $this->assignments()
+            ->where('assignable_type', $type)
+            ->orderBy('order')
+            ->first();
+    }
+    public function getComponentCount($type)
+    {
+        return $this->assignments()
+            ->where('assignable_type', $type)
+            ->count();
     }
 
-    public function portfolios()
-    {
-        return $this->hasMany(Portfolio::class);
-    }
+    // public function getSkills()
+    // {
+    //     return $this->assignments()
+    //         ->where('assignable_type', Skill::class)
+    //         ->orderBy('order')
+    //         ->get()
+    //         ->map(function ($assignment) {
+    //             return $assignment->assignable;
+    //         });
+    // }
+    // public function getExperiences()
+    // {
+    //     return $this->assignments()
+    //         ->where('assignable_type', Experience::class)
+    //         ->orderBy('order')
+    //         ->get()
+    //         ->map(function ($assignment) {
+    //             return $assignment->assignable;
+    //         });
+    // } 
+    // public function getServices()
+    // {
+    //     return $this->assignments()
+    //         ->where('assignable_type', Service::class)
+    //         ->orderBy('order')
+    //         ->get()
+    //         ->map(function ($assignment) {
+    //             return $assignment->assignable;
+    //         });
+    // }
+    // public function getPortfolios()
+    // {
+    //     return $this->assignments()
+    //         ->where('assignable_type', Portfolio::class)
+    //         ->orderBy('order')
+    //         ->get()
+    //         ->map(function ($assignment) {
+    //             return $assignment->assignable;
+    //         });
+    // }
+    // public function getTestimonials()
+    // {
+    //     return $this->assignments()
+    //         ->where('assignable_type', Testimonial::class)
+    //         ->orderBy('order')
+    //         ->get()
+    //         ->map(function ($assignment) {
+    //             return $assignment->assignable;
+    //         });
+    // }
 
-    public function testimonials()
-    {
-        return $this->hasMany(Testimonial::class);
-    }
 
-    public function portfolioCategories()
-    {
-        return $this->hasMany(PortfolioCategory::class);
-    }
+
+
+
+
+
+
+    // public function skills()
+    // {
+    //     return $this->hasMany(Skill::class);
+    // }
+
+    // public function experiences()
+    // {
+    //     return $this->hasMany(Experience::class);
+    // }
+
+    // public function services()
+    // {
+    //     return $this->hasMany(Service::class);
+    // }
+
+    // public function portfolios()
+    // {
+    //     return $this->hasMany(Portfolio::class);
+    // }
+
+    // public function testimonials()
+    // {
+    //     return $this->hasMany(Testimonial::class);
+    // }
+
+    // public function portfolioCategories()
+    // {
+    //     return $this->hasMany(PortfolioCategory::class);
+    // }
+
 
     public function getActiveCv()
     {
@@ -102,7 +234,7 @@ class CVInformation extends Model
     protected static function boot()
     {
         parent::boot();
-        
+
         static::deleting(function ($cvInformation) {
             if ($cvInformation->image) {
                 Storage::disk('public')->delete($cvInformation->image);

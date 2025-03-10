@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\PortfolioCategoryController;
 use App\Http\Controllers\Api\CVInformationController;
+use App\Http\Controllers\Api\CVComponentController;
 
 // Auth routes
 Route::post('login', [AuthController::class, 'login']);
@@ -18,6 +19,7 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 
 // CV Information routes
 Route::get('cv-information', [CVInformationController::class, 'index']);
+Route::get('cv-information/get-active', [CVInformationController::class, 'getActive'])->name('cv.information.getActive');
 Route::get('cv-information/{cvInformation}', [CVInformationController::class, 'show']);
 
 // Skill routes
@@ -59,5 +61,42 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('testimonials', TestimonialController::class)->except(['index', 'show']);
 
     Route::post('cv-information/set-active/{cvInformation}', [CVInformationController::class, 'setActive']);
+    // ------------------------------------CV Bileşenleri İçin Rotalar----------------------------------------------
+
+    Route::prefix('cv/{cv}/components')->group(function () {
+        // Tüm bileşenleri getir
+        Route::get('/', [CVComponentController::class, 'getAllComponents']);
+
+        // Belirli tipteki bileşenleri getir
+        Route::get('{type}', [CVComponentController::class, 'getComponents'])->name('cv.components.getComponents');
+
+        // Belirli bir bileşenin detayını getir
+        Route::get('{type}/{id}', [CVComponentController::class, 'getComponentDetail']);
+
+        // Bileşeni CV'ye ekle
+        Route::post('{type}', [CVComponentController::class, 'addComponent'])->name('cv.components.addComponent');
+
+        // CV'den bileşen sil
+        Route::delete('{type}', [CVComponentController::class, 'removeComponent'])->name('cv.components.removeComponent');
+
+        // CV'den belirli tipteki tüm bileşenleri sil
+        Route::delete('{type}/all', [CVComponentController::class, 'removeAllComponents']);
+
+        // Bileşenlerin sırasını değiştir
+        Route::put('{type}/order', [CVComponentController::class, 'reorderComponents']);
+
+        // Tek bir bileşenin sırasını güncelle
+        Route::put('{type}/order/single', [CVComponentController::class, 'updateComponentOrder']);
+
+        // Bileşenlerin sayısını getir
+        Route::get('{type}/count', [CVComponentController::class, 'getComponentCount']);
+
+    });
+
+    // Bir bileşenin atandığı CV'leri getir
+    Route::get('{type}/{id}/cv-information', [CVComponentController::class, 'getComponentCVs']);
+
+    // Tüm bileşenlerin atandığı CV'leri getir
+    Route::get('{type}/cv-information', [CVComponentController::class, 'getAllTypeComponentsCVs']);
 });
 

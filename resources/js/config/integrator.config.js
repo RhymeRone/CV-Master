@@ -347,18 +347,10 @@ export const integratorConfig = {
         }
       },
       actions: {
-        onSubmit: (formData, config) => {
-          const formDataObject = Object.fromEntries(formData.entries());
-          console.log('Form Verileri:', formDataObject);
-        },
         onSuccess: (response) => {
-          console.log(response);
           disposeModal('#addRowModal');
           loadCvList();
           return true;
-        },
-        onError: (error) => {
-          console.error('CV eklenirken hata oluştu:', error);
         },
         success: {
           message: 'CV başarıyla eklendi'
@@ -725,6 +717,278 @@ export const integratorConfig = {
       }
 
     },
+    ADD_EXPERIENCES: {
+      selector: '#addForm-experiences',
+      endpoint: '/experiences',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        position: {
+          rules: ['required', 'min:3', 'max:100'],
+          messages: {
+            required: 'Pozisyon alanı zorunludur.',
+            min: 'Pozisyon en az 3 karakter olmalıdır.',
+            max: 'Pozisyon en fazla 100 karakter olmalıdır.',
+          }
+        },
+        company: {
+          rules: ['required', 'min:3', 'max:100'],
+          messages: {
+            required: 'Şirket alanı zorunludur.',
+            min: 'Şirket en az 3 karakter olmalıdır.',
+            max: 'Şirket en fazla 100 karakter olmalıdır.',
+          }
+        },
+        start_date: {
+          rules: ['required', 'date', 'before:end_date', 'after:1900-01-01'],
+          messages: {
+            required: 'Başlangıç tarihi alanı zorunludur.',
+            date: 'Geçerli bir tarih giriniz.',
+            before: 'Başlangıç tarihi bitiş tarihinden önce olmalıdır.',
+            after: 'Başlangıç tarihi 1900 yılından sonra olmalıdır.',
+          }
+        },
+        end_date: {
+          rules: ['nullable', 'date', 'after:start_date', 'before:+1 year'],
+          messages: {
+            date: 'Geçerli bir tarih giriniz.',
+            after: 'Bitiş tarihi başlangıç tarihinden sonra olmalıdır.',
+            before: 'Bitiş tarihi gelecek yıldan büyük olamaz',
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Deneyim bilgileri başarıyla eklendi'
+        },
+        errors: {
+          message: 'Deneyim bilgileri eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_EXPERIENCES: {
+      selector: '#editForm-experiences',
+      endpoint: '/experiences/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/experiences/{id}',
+        autoFill: false,
+        mapping: {
+          'start_date': 'start_date',
+          'end_date': 'end_date',
+          '*': true
+        }
+      },
+      fields: {
+        position: {
+          rules: ['required', 'min:3', 'max:100'],
+          messages: {
+            required: 'Pozisyon alanı zorunludur.',
+            min: 'Pozisyon en az 3 karakter olmalıdır.',
+            max: 'Pozisyon en fazla 100 karakter olmalıdır.',
+          }
+        },
+        company: {
+          rules: ['required', 'min:3', 'max:100'],
+          messages: {
+            required: 'Şirket alanı zorunludur.',
+            min: 'Şirket en az 3 karakter olmalıdır.',
+            max: 'Şirket en fazla 100 karakter olmalıdır.',
+          }
+        },
+        start_date: {
+          rules: ['required', 'date', 'before:end_date', 'after:1900-01-01'],
+          messages: {
+            required: 'Başlangıç tarihi alanı zorunludur.',
+            date: 'Geçerli bir tarih giriniz.',
+            before: 'Başlangıç tarihi bitiş tarihinden önce olmalıdır.',
+            after: 'Başlangıç tarihi 1900 yılından sonra olmalıdır.',
+          }
+        },
+        end_date: {
+          rules: ['nullable', 'date', 'after:start_date', 'before:+1 year'],
+          messages: {
+            date: 'Geçerli bir tarih giriniz.',
+            after: 'Bitiş tarihi başlangıç tarihinden sonra olmalıdır.',
+            before: 'Bitiş tarihi gelecek yıldan büyük olamaz',
+          }
+        },
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Deneyim bilgileri başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Deneyim bilgileri güncellenirken bir hata oluştu',
+        }
+      }
+    },
+    ADD_SERVICES: {
+      selector: '#addForm-services',
+      endpoint: '/services',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Hizmet adı alanı zorunludur.',
+            string: 'Hizmet adı metin formatında olmalıdır.',
+            max: 'Hizmet adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        // icon: {
+        //   rules: ['required', 'string', 'max:50'],
+        //   messages: {
+        //     required: 'İkon alanı zorunludur.',
+        //     string: 'İkon metin formatında olmalıdır.',
+        //     max: 'İkon en fazla 50 karakter olmalıdır.',
+        //   }
+        // },
+        description: {
+          rules: ['required', 'string'],
+          messages: {
+            required: 'Açıklama alanı zorunludur.',
+            string: 'Açıklama metin formatında olmalıdır.',
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Hizmet bilgileri başarıyla eklendi'
+        },
+        errors: {
+          message: 'Hizmet bilgileri eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_SERVICES: {
+      selector: '#editForm-services',
+      endpoint: '/services/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/services/{id}',
+        autoFill: false,
+        mapping: {
+          '*': true
+        }
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Hizmet adı alanı zorunludur.',
+            string: 'Hizmet adı metin formatında olmalıdır.',
+            max: 'Hizmet adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        // icon: {
+        //   rules: ['required', 'string', 'max:50'],
+        //   messages: {
+        //     required: 'İkon alanı zorunludur.',
+        //     string: 'İkon metin formatında olmalıdır.',
+        //     max: 'İkon en fazla 50 karakter olmalıdır.',
+        //   }
+        // },
+        description: {
+          rules: ['required', 'string'],
+          messages: {
+            required: 'Açıklama alanı zorunludur.',
+            string: 'Açıklama metin formatında olmalıdır.',
+          }
+        },
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Hizmet bilgileri başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Hizmet bilgileri güncellenirken bir hata oluştu',
+        }
+      }
+    },
   },
   API: {
     baseURL: 'http://127.0.0.1:8000/api', // API'nin temel URL'i
@@ -798,7 +1062,7 @@ export const integratorConfig = {
     notifications: {
       position: 'center', // Bildirimin konumu
       timer: 2000, // Bildirimin gösterim süresi (ms)
-      showConfirmButton: true,
+      showConfirmButton: false,
     },
     validation: {
       showErrors: true,

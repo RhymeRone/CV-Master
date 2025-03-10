@@ -16,11 +16,11 @@ return new class extends Migration
             $table->text('description')->comment('Hizmet açıklaması');
             $table->string('icon')->comment('Font Awesome ikon ismi');
             
-            // İlişki
-            $table->foreignId('cv_information_id')
-                ->constrained('cv_information')
-                ->onDelete('cascade')
-                ->comment('CV bilgisi ID');
+            // // İlişki
+            // $table->foreignId('cv_information_id')
+            //     ->constrained('cv_information')
+            //     ->onDelete('cascade')
+            //     ->comment('CV bilgisi ID');
             
             $table->timestamps();
             $table->softDeletes();

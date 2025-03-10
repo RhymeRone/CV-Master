@@ -29,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     integrator.initialize();
     window.integrator = integrator;
     window.apiService = new ApiFormIntegrator.ApiService({
-      baseUrl: 'http://127.0.0.1:8000/api',
-      sweetalert2: true,
+      baseUrl: 'http://127.0.0.1:8000/api'
     });
     
   });

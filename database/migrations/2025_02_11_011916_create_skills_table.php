@@ -22,11 +22,11 @@ return new class extends Migration
             
             $table->string('color', 7)->default('#4A90E2')->comment('Renk kodu (Hex)');
             
-            // İlişki
-            $table->foreignId('cv_information_id')
-                ->constrained('cv_information')
-                ->onDelete('cascade')
-                ->comment('CV bilgisi ID');
+            // // İlişki
+            // $table->foreignId('cv_information_id')
+            //     ->constrained('cv_information')
+            //     ->onDelete('cascade')
+            //     ->comment('CV bilgisi ID');
             
             $table->timestamps();
             $table->softDeletes();

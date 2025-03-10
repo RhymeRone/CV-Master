@@ -17,8 +17,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string|max:255',
             'comment' => 'required|string',
             'job' => 'required|string|max:255',
-            'image' => 'required|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size'),
-            'cv_information_id' => 'required|exists:cv_information,id'
+            'image' => 'required|image|mimes:'.implode(',', config('admin.upload.image.mimes')).'|max:'.config('admin.upload.image.max_size').'|min:'.config('admin.upload.image.min_size')
         ];
     }
 

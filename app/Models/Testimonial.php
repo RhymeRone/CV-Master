@@ -19,11 +19,6 @@ class Testimonial extends Model
         'cv_information_id'
     ];
 
-    public function cvInformation()
-    {
-        return $this->belongsTo(CVInformation::class);
-    }
-
     protected static function boot()
     {
         parent::boot();
@@ -32,6 +27,11 @@ class Testimonial extends Model
             if ($testimonial->image) {
                 Storage::disk('public')->delete($testimonial->image);
             }
+            CVAssignment::where('assignable_type', Testimonial::class)
+                ->where('assignable_id', $testimonial->id)
+                ->delete();
         });
     }
+
+    
 } 

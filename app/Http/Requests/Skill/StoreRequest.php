@@ -24,8 +24,7 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'level' => 'required|integer|min:0|max:100',
-            'color' => 'required|string|size:7|starts_with:#',
-            'cv_information_id' => 'required|exists:cv_information,id'
+            'color' => 'required|string|size:7|starts_with:#'
         ];
     }
 
