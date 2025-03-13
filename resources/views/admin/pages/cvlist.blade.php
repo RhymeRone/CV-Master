@@ -721,9 +721,6 @@
 @endpush
 
 @push('scripts')
-    {{-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('assets/js/integrator.cdn.js') }}"></script> --}}
 
 
     <script>

@@ -73,7 +73,7 @@
     </script>
 @endpush
 
-@section('add-form')
+@section('form')
     <!-- Başlık -->
     <div class="col-md-12">
         <h6 class="mb-3"><i class="fa fa-cog me-2 text-primary"></i>@yield('page-name')</h6>
@@ -84,7 +84,7 @@
             <span class="input-group-text">
                 <i class="fa fa-cog fa-fw" style="color: #6c757d;"></i>
             </span>
-            <input id="addName" name="name" type="text" class="form-control" placeholder="Hizmet adı giriniz"
+            <input name="name" type="text" class="form-control" placeholder="Hizmet adı giriniz"
                 required />
         </div>
     </div>
@@ -94,9 +94,9 @@
             <span class="input-group-text">
                 <i class="fa fa-code"></i>
             </span>
-            <input id="addIcon" name="icon" type="text" class="form-control"
+            <input name="icon" type="text" class="form-control"
                 placeholder="İkon kodu giriniz (örn: fa-code)" value="fa-code" />
-            <button id="addIconButton" type="button" class="btn btn-outline-secondary">
+            <button type="button" class="btn btn-outline-secondary">
                 <i class="fa fa-search"></i> İkon Seç
             </button>
         </div>
@@ -107,47 +107,7 @@
             <span class="input-group-text">
                 <i class="fa fa-align-left fa-fw" style="color: #6c757d;"></i>
             </span>
-            <textarea id="addDescription" name="description" class="form-control" placeholder="Hizmet açıklaması giriniz"
-                rows="4" required></textarea>
-        </div>
-    </div>
-@endsection
-
-@section('edit-form')
-    <!-- Başlık -->
-    <div class="col-md-12">
-        <h6 class="mb-3"><i class="fa fa-cog me-2 text-primary"></i>@yield('page-name')</h6>
-    </div>
-    <!-- Hizmet Adı -->
-    <div class="col-md-6">
-        <div class="input-group mb-3">
-            <span class="input-group-text">
-                <i class="fa fa-cog fa-fw" style="color: #6c757d;"></i>
-            </span>
-            <input id="editName" name="name" type="text" class="form-control" placeholder="Hizmet adı giriniz"
-                required />
-        </div>
-    </div>
-    <!-- İkon -->
-    <div class="col-md-6">
-        <div class="input-group mb-3">
-            <span class="input-group-text">
-                <i class="fa fa-code"></i>
-            </span>
-            <input id="editIcon" name="icon" type="text" class="form-control"
-                placeholder="İkon kodu giriniz (örn: fa-code)" />
-            <button id="editIconButton" type="button" class="btn btn-outline-secondary">
-                <i class="fa fa-search"></i> İkon Seç
-            </button>
-        </div>
-    </div>
-    <!-- Açıklama -->
-    <div class="col-md-12">
-        <div class="input-group mb-3">
-            <span class="input-group-text">
-                <i class="fa fa-align-left fa-fw" style="color: #6c757d;"></i>
-            </span>
-            <textarea id="editDescription" name="description" class="form-control" placeholder="Hizmet açıklaması giriniz"
+            <textarea name="description" class="form-control" placeholder="Hizmet açıklaması giriniz"
                 rows="4" required></textarea>
         </div>
     </div>
@@ -161,6 +121,6 @@
 
 @section('table-body')
     <td>${info.name ?? 'Belirtilmemiş'}</td>
-    <td><i style="align-items: center; justify-content: center; display: flex;" class="${info.icon ?? ''}"></i></td>
+    <td><i class="${info.icon ?? ''}"></i></td>
     <td>${info.description ?? 'Belirtilmemiş'}</td>
 @endsection

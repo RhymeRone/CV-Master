@@ -48,14 +48,14 @@ export const integratorConfig = {
         // onError callback desteği: API hata döndürdüğünde çalışır.
         onError: (error) => { console.log(error); return true }, // false döndürürse default hata işlemleri çalışmaz.
         success: {
-          redirect: '/dashboard', // Yönlendirme yapılacak sayfa
+          redirect: 'admin/dashboard', // Yönlendirme yapılacak sayfa
           message: 'Giriş başarılı!', // Başarı mesajı
         },
         errors: {
           // redirect: '/login',
           message: 'Bir hata oluştu',
           400: {
-            redirect: '/dashboard',
+            redirect: 'admin/dashboard',
             message: 'Zaten giriş yapılmış', // 400 hatası için mesaj
           },
           401: {
@@ -986,6 +986,137 @@ export const integratorConfig = {
         },
         errors: {
           message: 'Hizmet bilgileri güncellenirken bir hata oluştu',
+        }
+      }
+    },
+    ADD_SKILLS: {
+      selector: '#addForm-skills',
+      endpoint: '/skills',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Yetenek adı alanı zorunludur.',
+            string: 'Yetenek adı metin formatında olmalıdır.',
+            max: 'Yetenek adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        level: {
+          rules: ['required', 'integer', 'min:0', 'max:100'],
+          messages: {
+            required: 'Seviye alanı zorunludur.',
+            integer: 'Seviye sayısal bir değer olmalıdır.',
+            min: 'Seviye en az 0 olmalıdır.',
+            max: 'Seviye en fazla 100 olmalıdır.',
+          }
+        },
+        color: {
+          rules: ['required', 'string', 'size:7', 'starts_with:#'],
+          messages: {
+            required: 'Renk alanı zorunludur.',
+            string: 'Renk metin formatında olmalıdır.',
+            size: 'Renk kodu 7 karakter olmalıdır.',
+            starts_with: 'Renk kodu # ile başlamalıdır.',
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Yetenek başarıyla eklendi'
+        },
+        errors: {
+          message: 'Yetenek eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_SKILLS: {
+      selector: '#editForm-skills',
+      endpoint: '/skills/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/skills/{id}',
+        autoFill: false,
+        mapping: {
+          '*': true
+        }
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Yetenek adı alanı zorunludur.',
+            string: 'Yetenek adı metin formatında olmalıdır.',
+            max: 'Yetenek adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        level: {
+          rules: ['required', 'integer', 'min:0', 'max:100'],
+          messages: {
+            required: 'Seviye alanı zorunludur.',
+            integer: 'Seviye sayısal bir değer olmalıdır.',
+            min: 'Seviye en az 0 olmalıdır.',
+            max: 'Seviye en fazla 100 olmalıdır.',
+          }
+        },
+        color: {
+          rules: ['required', 'string', 'size:7', 'starts_with:#'],
+          messages: {
+            required: 'Renk alanı zorunludur.',
+            string: 'Renk metin formatında olmalıdır.',
+            size: 'Renk kodu 7 karakter olmalıdır.',
+            starts_with: 'Renk kodu # ile başlamalıdır.',
+          }
+        },
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Yetenek başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Yetenek güncellenirken bir hata oluştu',
         }
       }
     },

@@ -44,4 +44,8 @@ Route::prefix('admin')->group(function () {
         return view('admin.pages.services');
     })->name('admin.services');
 
+    Route::get('/skills', function () {
+        return view('admin.pages.skills');
+    })->name('admin.skills');
+
 });

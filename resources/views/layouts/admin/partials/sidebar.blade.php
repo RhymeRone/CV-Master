@@ -53,6 +53,13 @@
                                 <p>Hizmetler</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.skills') }}">
+                                <i class="fas fa-star"></i>
+                                <p>Yetenekler</p>
+                            </a>
+                        </li>
+                        
                     </ul>
                 </div>
             </div>

@@ -33,7 +33,7 @@
                                     <form method="POST" enctype="multipart/form-data" id="addForm-@yield('component-name')">
                                         @csrf
                                         <div class="row">
-                                            @yield('add-form')
+                                            @yield('form')
                                         </div>
                                         <div class="modal-footer border-0">
                                             <button type="submit" class="btn btn-primary" id="btnAdd">Ekle</button>
@@ -65,7 +65,7 @@
                                         @csrf
                                         <div class="row">
                                             <input type="hidden" id="editId" name="id" />
-                                            @yield('edit-form')
+                                            @yield('form')
                                         </div>
                                         <div class="modal-footer border-0">
                                             <button type="submit" class="btn btn-primary" id="btnEdit">Düzenle</button>
@@ -81,14 +81,14 @@
 
                     <div class="table-responsive">
                         <table id="add-row" class="display table table-hover">
-                            <thead>
+                            <thead class="text-left">
                                 <tr>
                                     <th>AKTİF</th>
                                     @yield('table-header')
                                     <th style="width: 10%" class="text-center">İŞLEMLER</th>
                                 </tr>
                             </thead>
-                            <tbody id="list">
+                            <tbody id="list" class="text-left">
                                 <!-- Dinamik İçerik -->
 
                             </tbody>

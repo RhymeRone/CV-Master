@@ -23,11 +23,11 @@ class CVComponentController extends Controller
         $type = strtolower($type);
 
         $modelMap = [
-            'skill' => Skill::class,
+            'skills' => Skill::class,
             'experiences' => Experience::class,
-            'portfolio' => Portfolio::class,
+            'portfolios' => Portfolio::class,
             'services' => Service::class,
-            'testimonial' => Testimonial::class,
+            'testimonials' => Testimonial::class,
         ];
 
         return $modelMap[$type] ?? null;
