@@ -59,7 +59,28 @@
                                 <p>Yetenekler</p>
                             </a>
                         </li>
-                        
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#portfolios">
+                                <i class="fas fa-images"></i>
+                                <p>Portföyler</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="portfolios">
+                                <ul class="nav nav-collapse">
+                                    <li>
+                                        <a href="{{ route('admin.portfolios') }}">
+                                            <i class="fas fa-plus-circle"></i> Portföy Ekle
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('admin.portfolioCategories') }}">
+                                            <i class="fas fa-plus-circle"></i> Kategori Ekle
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                     </ul>
                 </div>
             </div>

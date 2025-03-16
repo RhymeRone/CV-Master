@@ -14,15 +14,14 @@ class PortfolioCategory extends Model
     protected $fillable = [
         'name',
         'slug',
-        'icon',
-        'cv_information_id'
+        'icon'
     ];
 
     // Otomatik slug oluşturma
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($category) {
             $category->slug = $category->generateUniqueSlug($category->name);
         });
@@ -45,18 +44,27 @@ class PortfolioCategory extends Model
     {
         $slug = Str::slug($name);
         $count = static::whereRaw("slug RLIKE '^{$slug}(-[0-9]+)?$'")->count();
-        
+
         return $count ? "{$slug}-{$count}" : $slug;
     }
 
     // Route model binding için slug kullanma
-    public function getRouteKeyName()
+// app/Models/PortfolioCategory.php
+    public function resolveRouteBinding($value, $field = null)
     {
-        return 'slug';
+        // API rotalarında ID kullan
+        if (request()->is('api/*')) {
+            return $this->where('id', $value)->firstOrFail();
+        }
+
+        // Web rotalarında slug kullan
+        return $this->where('slug', $value)->firstOrFail();
     }
 
+    // PortfolioCategory.php'de
     public function portfolios()
     {
-        return $this->belongsToMany(Portfolio::class, 'portfolio_portfolio_category');
+        return $this->belongsToMany(Portfolio::class, 'portfolio_category_portfolio');
+        // Laravel otomatik olarak portfolio_category_portfolio tablosunu kullanacaktır
     }
-} 
+}

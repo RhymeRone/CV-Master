@@ -8,6 +8,7 @@ use App\Models\CVInformation;
 use App\Models\Skill;
 use App\Models\Experience;
 use App\Models\Portfolio;
+use App\Models\PortfolioCategory;
 use App\Models\Service;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
@@ -26,8 +27,9 @@ class CVComponentController extends Controller
             'skills' => Skill::class,
             'experiences' => Experience::class,
             'portfolios' => Portfolio::class,
+            'portfolio-categories' => PortfolioCategory::class,
             'services' => Service::class,
-            'testimonials' => Testimonial::class,
+            'testimonials' => Testimonial::class
         ];
 
         return $modelMap[$type] ?? null;

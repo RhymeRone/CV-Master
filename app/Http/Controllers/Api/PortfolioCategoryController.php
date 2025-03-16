@@ -48,9 +48,10 @@ class PortfolioCategoryController extends Controller
 
     public function destroy(PortfolioCategory $portfolioCategory)
     {
-        $portfolioCategory->delete();
+        $portfolioCategory->forceDelete();
         return response()->json([
             'message' => 'Kategori başarıyla silindi'
         ]);
     }
+
 } 

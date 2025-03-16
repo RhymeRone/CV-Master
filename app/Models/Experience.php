@@ -14,8 +14,7 @@ class Experience extends Model
         'position',
         'company',
         'start_date',
-        'end_date',
-        'cv_information_id'
+        'end_date'
     ];
 
     protected $casts = [

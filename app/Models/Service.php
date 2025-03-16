@@ -13,8 +13,7 @@ class Service extends Model
     protected $fillable = [
         'name',
         'description',
-        'icon',
-        'cv_information_id'
+        'icon'
     ];
 
     protected static function boot()

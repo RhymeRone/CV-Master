@@ -1120,6 +1120,275 @@ export const integratorConfig = {
         }
       }
     },
+    ADD_PORTFOLIOCATEGORIES: {
+      selector: '#addForm-portfolio-categories',
+      endpoint: '/portfolio-categories',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Kategori adı gereklidir',
+            string: 'Kategori adı metin formatında olmalıdır.',
+            max: 'Kategori adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        icon: {
+          rules: ['required', 'string', 'max:50'],
+          messages: {
+            required: 'Kategori ikonu gereklidir',
+            string: 'İkon metin formatında olmalıdır.',
+            max: 'İkon ismi çok uzun',
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Kategori başarıyla eklendi'
+        },
+        errors: {
+          message: 'Kategori eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_PORTFOLIOCATEGORIES: {
+      selector: '#editForm-portfolio-categories',
+      endpoint: '/portfolio-categories/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/portfolio-categories/{id}',
+        autoFill: false,
+        mapping: {
+          '*': true
+        }
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Kategori adı gereklidir',
+            string: 'Kategori adı metin formatında olmalıdır.',
+            max: 'Kategori adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        icon: {
+          rules: ['required', 'string', 'max:50'],
+          messages: {
+            required: 'Kategori ikonu gereklidir',
+            string: 'İkon metin formatında olmalıdır.',
+            max: 'İkon ismi çok uzun',
+          }
+        }
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Kategori başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Kategori güncellenirken bir hata oluştu',
+        }
+      }
+    },
+    ADD_PORTFOLIOS: {
+      selector: '#addForm-portfolios',
+      endpoint: '/portfolios',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Portfolyo adı gereklidir',
+            string: 'Portfolyo adı metin formatında olmalıdır.',
+            max: 'Portfolyo adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        description: {
+          rules: ['nullable', 'string'],
+          messages: {
+            string: 'Açıklama metin formatında olmalıdır.',
+          }
+        },
+        link: {
+          rules: ['nullable', 'url', 'max:255'],
+          messages: {
+            url: 'Geçerli bir URL giriniz',
+            max: 'Link en fazla 255 karakter olabilir',
+          }
+        },
+        'images[]': {
+          rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          messages: {
+            required: 'En az bir portfolyo görseli gereklidir',
+            array: 'Görseller dizi formatında olmalıdır',
+            min: 'En az bir görsel yüklemelisiniz',
+            image: 'Dosya bir görsel olmalıdır',
+            mimes: 'Görsel jpeg,png,jpg,svg formatında olmalıdır',
+            max: 'Görsel en fazla 2MB olabilir',
+          }
+        },
+        categories: {
+          rules: ['required', 'array', 'min:1'],
+          messages: {
+            required: 'En az bir kategori seçmelisiniz',
+            array: 'Kategoriler dizi formatında olmalıdır',
+            min: 'En az bir kategori seçmelisiniz',
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Portfolyo başarıyla eklendi'
+        },
+        errors: {
+          message: 'Portfolyo eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_PORTFOLIOS: {
+      selector: '#editForm-portfolios',
+      endpoint: '/portfolios/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/portfolios/{id}',
+        autoFill: false,
+        mapping: {
+          '*': true
+        }
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Portfolyo adı gereklidir',
+            string: 'Portfolyo adı metin formatında olmalıdır.',
+            max: 'Portfolyo adı en fazla 255 karakter olmalıdır.',
+          }
+        },
+        description: {
+          rules: ['nullable', 'string'],
+          messages: {
+            string: 'Açıklama metin formatında olmalıdır.',
+          }
+        },
+        link: {
+          rules: ['nullable', 'url', 'max:255'],
+          messages: {
+            url: 'Geçerli bir URL giriniz',
+            max: 'Link en fazla 255 karakter olabilir',
+          }
+        },
+        'images[]': {
+          rules: ['nullable', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          messages: {
+            array: 'Görseller dizi formatında olmalıdır',
+            min: 'En az bir görsel yüklemelisiniz',
+            image: 'Dosya bir görsel olmalıdır',
+            mimes: 'Görsel jpeg,png,jpg,svg formatında olmalıdır',
+            max: 'Görsel en fazla 2MB olabilir',
+          }
+        },
+        categories: {
+          rules: ['required', 'array', 'min:1'],
+          messages: {
+            required: 'En az bir kategori seçmelisiniz',
+            array: 'Kategoriler dizi formatında olmalıdır',
+            min: 'En az bir kategori seçmelisiniz',
+          }
+        },
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Portfolyo başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Portfolyo güncellenirken bir hata oluştu',
+        }
+      }
+    },
   },
   API: {
     baseURL: 'http://127.0.0.1:8000/api', // API'nin temel URL'i
@@ -1142,6 +1411,8 @@ export const integratorConfig = {
     // tokenKey değeri girildiğinde, token değeri header'da Authorization: Bearer tokenKey değeri şeklinde saklanır.
     errors: { // Hata durumları
       // redirect: '/', // Hata durumunda yönlendirme
+      timer: 100000, // Hata durumunda bildirim süresi
+      showConfirmButton: true, // Hata durumunda bildirim butonu gösterimi
       message: 'Bir hata oluştu', // Hata durumunda mesaj
       401: {
         redirect: '/login',

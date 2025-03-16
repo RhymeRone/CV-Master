@@ -15,8 +15,7 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'icon' => 'required|string|max:50'
-            
+            'icon' => 'required|string|max:50'  
         ];
     }
 

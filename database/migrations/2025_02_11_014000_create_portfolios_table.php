@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('name')->comment('Portfolyo adı');
             $table->text('description')->nullable()->comment('Portfolyo açıklaması');
             $table->string('link')->nullable()->comment('Proje linki');
-            $table->string('image')->comment('Portfolyo görseli');
             
             // // İlişki
             // $table->foreignId('cv_information_id')

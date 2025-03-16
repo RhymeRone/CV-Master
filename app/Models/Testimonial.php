@@ -15,8 +15,7 @@ class Testimonial extends Model
         'name',
         'comment',
         'job',
-        'image',
-        'cv_information_id'
+        'image'
     ];
 
     protected static function boot()

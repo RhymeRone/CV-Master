@@ -12,8 +12,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Özgeçmiş Listeniz</h4>
-                        <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal"
-                            data-bs-target="#addRowModal">
+                        <button class="btn btn-primary btn-round ms-auto" data-bs-toggle="modal" data-bs-target="#addRowModal">
                             <i class="fa fa-plus"></i>
                             CV Ekle
                         </button>
@@ -101,8 +100,8 @@
                                                     <span class="input-group-text">
                                                         <i class="fa fa-envelope fa-fw" style="color: #6c757d;"></i>
                                                     </span>
-                                                    <input id="addEmail" name="email" type="email"
-                                                        class="form-control" placeholder="E-posta giriniz" />
+                                                    <input id="addEmail" name="email" type="email" class="form-control"
+                                                        placeholder="E-posta giriniz" />
                                                 </div>
                                             </div>
                                             <!-- Telefon -->
@@ -691,6 +690,27 @@
                         </div>
                     </div>
 
+                    <!-- Görsel Modalı -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel">Portfolyo Görseli</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Kapat"></button>
+                                </div>
+                                <div class="modal-body text-center p-0">
+                                    <img src="" id="modalImage" class="img-fluid w-100" alt="Portfolyo Görseli">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Kapat</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table id="add-row" class="display table table-hover">
                             <thead>
@@ -721,8 +741,6 @@
 @endpush
 
 @push('scripts')
-
-
     <script>
         var cvApiService;
         var formEntegrator;
@@ -820,7 +838,9 @@
                                             <div class="avatar">
                                                 <img src="${cvInfo.image ? cvInfo.image : '/assets/img/default-avatar.jpg'}"
                                                     alt="${cvInfo.name || 'CV Resmi'}"
-                                                    class="avatar-img rounded">
+                                                    class="avatar-img rounded"
+                                                    style="cursor: pointer;"
+                                                    onclick="openImageModal('${cvInfo.image ? cvInfo.image : '/assets/img/default-avatar.jpg'}', '${cvInfo.name || 'CV Resmi'}')">
                                             </div>
                                         </td>
                                         <td>${cvInfo.name ?? 'İsimsiz' }</td>
@@ -974,23 +994,23 @@
                                 </div>
 
                                 ${cvInfo.slogan && cvInfo.slogan.length > 0 ? `
-                                                                                                                                                <div class="card border-0 shadow-sm mb-4">
-                                                                                                                                                    <div class="card-header bg-white">
-                                                                                                                                                        <h6 class="mb-0 fw-bold"><i class="fa fa-quote-left text-primary me-2"></i>Sloganlar
-                                                                                                                                                        </h6>
-                                                                                                                                                    </div>
-                                                                                                                                                    <div class="card-body p-0">
-                                                                                                                                                        <div class="list-group list-group-flush">
-                                                                                                                                                            ${cvInfo.slogan.map(slogan => `
+                                                                                                                                                        <div class="card border-0 shadow-sm mb-4">
+                                                                                                                                                            <div class="card-header bg-white">
+                                                                                                                                                                <h6 class="mb-0 fw-bold"><i class="fa fa-quote-left text-primary me-2"></i>Sloganlar
+                                                                                                                                                                </h6>
+                                                                                                                                                            </div>
+                                                                                                                                                            <div class="card-body p-0">
+                                                                                                                                                                <div class="list-group list-group-flush">
+                                                                                                                                                                    ${cvInfo.slogan.map(slogan => `
                                             <div class="list-group-item border-0 d-flex">
                                                 <i class="fa fa-angle-right text-primary me-2 mt-1"></i>
                                                 <span>${slogan}</span>
                                             </div>
                                             `).join('')}
+                                                                                                                                                                </div>
+                                                                                                                                                            </div>
                                                                                                                                                         </div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                                ` : ''}
+                                                                                                                                                        ` : ''}
                             </div>
 
                             <!-- Sağ Kolon -->
@@ -1082,59 +1102,59 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 ${cvInfo.social_media && cvInfo.social_media.linkedin ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.linkedin}" 
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fab fa-linkedin fa-fw fa-lg"></i> <span class="fs-6">LinkedIn</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.linkedin}" 
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fab fa-linkedin fa-fw fa-lg"></i> <span class="fs-6">LinkedIn</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.github ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.github}"
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fab fa-github fa-fw fa-lg"></i> <span class="fs-6">GitHub</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.github}"
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fab fa-github fa-fw fa-lg"></i> <span class="fs-6">GitHub</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.twitter ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.twitter}"
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fab fa-twitter fa-fw fa-lg"></i> <span class="fs-6">Twitter</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.twitter}"
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fab fa-twitter fa-fw fa-lg"></i> <span class="fs-6">Twitter</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
                                             </tr>
                                             <tr>
                                                 ${cvInfo.social_media && cvInfo.social_media.facebook ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.facebook}"
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fab fa-facebook fa-fw fa-lg"></i> <span class="fs-6">Facebook</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.facebook}"
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fab fa-facebook fa-fw fa-lg"></i> <span class="fs-6">Facebook</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.instagram ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.instagram}"
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fab fa-instagram fa-fw fa-lg"></i> <span class="fs-6">Instagram</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.instagram}"
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fab fa-instagram fa-fw fa-lg"></i> <span class="fs-6">Instagram</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.website ? `
-                                                                                                                                                                <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                    <a href="${cvInfo.social_media.website}"
-                                                                                                                                                                    class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                        <i class="fa fa-globe fa-fw fa-lg"></i> <span class="fs-6">Website</span>
-                                                                                                                                                                    </a>
-                                                                                                                                                                </td>
-                                                                                                                                                                ` : ''}
+                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                            <a href="${cvInfo.social_media.website}"
+                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                <i class="fa fa-globe fa-fw fa-lg"></i> <span class="fs-6">Website</span>
+                                                                                                                                                                            </a>
+                                                                                                                                                                        </td>
+                                                                                                                                                                        ` : ''}
                                             </tr>
                                         </table>
                                     </div>
@@ -1198,7 +1218,7 @@
             });
         }
 
-        
+
         // ---------------------------------- ESKİ CV DÜZENLEME MODAL FONKSİYONU ----------------------------------
         function prepareCvEditModal(cvId) {
 
@@ -1310,6 +1330,30 @@
         }
     </script>
 
+    <!-- Görsel Modalı -->
+    <script>
+        // Görsel modalı açmak için fonksiyon
+        function openImageModal(imageUrl, imageTitle) {
+            // Modal başlığını ayarla
+            document.getElementById('imageModalLabel').textContent = imageTitle;
+
+            // Modal görselini ayarla
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageUrl;
+            modalImage.alt = imageTitle;
+
+            // Modal'ı açmak için
+            showModal('#imageModal');
+        }
+
+        // Görsel yüklendiğinde
+        document.getElementById('modalImage').addEventListener('load', function() {
+            // Görsel yüklenmezse veya hatalıysa alternatif görsel göster
+            this.onerror = function() {
+                this.src = '{{ asset('images/no-image.png') }}';
+            };
+        });
+    </script>
     <!----------------------------------------------- YAZDIRMA MODAL ----------------------------------------- -->
 
     <!-- Loading Spinner HTML -->

@@ -46,7 +46,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Düzenleme Modal -->
                     <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
                         <div class="modal-dialog modal-lg" role="document">
@@ -79,6 +78,8 @@
                         </div>
                     </div>
 
+                    @yield('modal')
+
                     <div class="table-responsive">
                         <table id="add-row" class="display table table-hover">
                             <thead class="text-left">
@@ -106,6 +107,7 @@
         var apiService;
         var formEntegrator;
         var componentName = '@yield('component-name')';
+        var formName = '@yield('form-name')';
 
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
@@ -386,12 +388,16 @@
         }
        
         function editRow(id) {
-            formEntegrator.loadFormData('EDIT_' + componentName, {
+            @hasSection('edit-row')
+                @yield('edit-row')
+            @else
+                 formEntegrator.loadFormData('EDIT_' + (formName ?? componentName), {
                 params: {
                     id: id
                 }
             });
             showModal('#editModal');
+            @endif
         }
       
         function deleteRow(id) {

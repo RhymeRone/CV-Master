@@ -48,4 +48,13 @@ Route::prefix('admin')->group(function () {
         return view('admin.pages.skills');
     })->name('admin.skills');
 
+    Route::get('/portfolios', function () {
+        return view('admin.pages.portfolios');
+    })->name('admin.portfolios');
+
+    Route::get('/portfolioCategories', function () {
+        return view('admin.pages.portfolioCategories');
+    })->name('admin.portfolioCategories');
+
+
 });

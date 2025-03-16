@@ -1,10 +1,11 @@
 @extends('layouts.admin.component')
 
-@section('title', 'Hizmetleriniz')
-@section('page-name', 'Hizmet')
-@section('component-name', 'services')
+@section('title', 'Portfolyo Kategorileriniz')
+@section('page-name', 'Kategori')
+@section('component-name', 'portfolio-categories')
+@section('form-name', 'PORTFOLIOCATEGORIES')
 
-@section('route', route('admin.services'))
+@section('route', route('admin.portfolioCategories'))
 
 @push('styles')
     <!-- Universal Icon Picker CSS -->
@@ -106,13 +107,14 @@
     <div class="col-md-12">
         <h6 class="mb-3"><i class="fa fa-cog me-2 text-primary"></i>@yield('page-name')</h6>
     </div>
-    <!-- Hizmet Adı -->
+    <!-- Portfolyo Kategori Adı -->
     <div class="col-md-6">
         <div class="input-group mb-3">
             <span class="input-group-text">
                 <i class="fa fa-cog fa-fw" style="color: #6c757d;"></i>
             </span>
-            <input name="name" type="text" class="form-control" placeholder="Hizmet adı giriniz" required />
+            <input name="name" type="text" class="form-control" placeholder="Portfolyo kategori adı giriniz"
+                required />
         </div>
     </div>
     <!-- İkon -->
@@ -121,32 +123,20 @@
             <span class="input-group-text">
                 <i class="fa fa-code"></i>
             </span>
-            <input name="icon" type="text" class="form-control" placeholder="İkon kodu giriniz (örn: fa-code)"
-                value="fa-code" />
+            <input name="icon" type="text" class="form-control" placeholder="İkon kodu giriniz (örn: fa-code)" />
             <button type="button" class="btn btn-outline-secondary">
                 <i class="fa fa-search"></i> İkon Seç
             </button>
         </div>
     </div>
-    <!-- Açıklama -->
-    <div class="col-md-12">
-        <div class="input-group mb-3">
-            <span class="input-group-text">
-                <i class="fa fa-align-left fa-fw" style="color: #6c757d;"></i>
-            </span>
-            <textarea name="description" class="form-control" placeholder="Hizmet açıklaması giriniz" rows="4" required></textarea>
-        </div>
-    </div>
 @endsection
 
 @section('table-header')
-    <th>HİZMET ADI</th>
+    <th>PORTFOLYO KATEGORİSİ ADI</th>
     <th>İKON</th>
-    <th>AÇIKLAMA</th>
 @endsection
 
 @section('table-body')
     <td>${info.name ?? 'Belirtilmemiş'}</td>
     <td><i class="${info.icon ?? ''}"></i></td>
-    <td>${info.description ?? 'Belirtilmemiş'}</td>
 @endsection

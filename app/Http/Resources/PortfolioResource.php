@@ -15,7 +15,27 @@ class PortfolioResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'link' => $this->link,
-            'image' => $this->image ? Storage::url($this->image) : null,
+            // Ana görseli URL olarak döndür
+            'main_image' => $this->main_image_path ? Storage::url($this->main_image_path) : null,
+            
+            // Tüm görselleri dizi olarak döndür
+            'images' => $this->images->map(function($image) {
+                return [
+                    'id' => $image->id,
+                    'image_url' => Storage::url($image->image_path),
+                    'is_main' => $image->is_main,
+                    'sort_order' => $image->sort_order
+                ];
+            }),
+
+            'categories' => $this->categories->map(function($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'icon' => $category->icon,
+                    'slug' => $category->slug
+                ];
+            }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

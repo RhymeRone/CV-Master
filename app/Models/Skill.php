@@ -14,8 +14,7 @@ class Skill extends Model
     protected $fillable = [
         'name',
         'level',
-        'color',
-        'cv_information_id'
+        'color'
     ];
 
     protected $casts = [

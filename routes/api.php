@@ -38,10 +38,10 @@ Route::get('services/{service}', [ServiceController::class, 'show']);
 Route::get('portfolios', [PortfolioController::class, 'index']);
 Route::get('portfolios/{portfolio}', [PortfolioController::class, 'show']);
 
+
 // Portfolio Category routes
 Route::get('portfolio-categories', [PortfolioCategoryController::class, 'index']);
 Route::get('portfolio-categories/{portfolioCategory}', [PortfolioCategoryController::class, 'show']);
-
 // Testimonial routes
 Route::get('testimonials', [TestimonialController::class, 'index']);
 Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show']);
@@ -61,6 +61,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('testimonials', TestimonialController::class)->except(['index', 'show']);
 
     Route::post('cv-information/set-active/{cvInformation}', [CVInformationController::class, 'setActive']);
+
+    // Portfolyo görselleri yönetimi
+    Route::get('portfolios/{portfolio}/images', [PortfolioController::class, 'getImages']);
+    Route::post('portfolios/{portfolio}/images', [PortfolioController::class, 'addImages']);
+    Route::put('portfolios/images/order', [PortfolioController::class, 'updateImageOrder']);
+    Route::post('portfolios/{portfolio}/set-main-image', [PortfolioController::class, 'setMainImage']);
+    Route::delete('portfolios/images', [PortfolioController::class, 'deleteImage']);
+    
     // ------------------------------------CV Bileşenleri İçin Rotalar----------------------------------------------
 
     Route::prefix('cv/{cv}/components')->group(function () {
