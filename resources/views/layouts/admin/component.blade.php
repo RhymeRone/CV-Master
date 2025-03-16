@@ -299,6 +299,7 @@
                                 title="Bilgileri Sil" onclick="deleteRow(${info.id})">
                                 <i class="fa fa-times"></i>
                             </button>
+                            @yield('table-actions')
                         </div>
                     </td>
                 </tr>

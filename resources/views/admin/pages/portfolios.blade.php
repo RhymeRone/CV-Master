@@ -9,196 +9,207 @@
 @section('edit-row')
     // Önce modalı göster
     showModal('#editModal');
-    
+
     // Form verilerini yükle
     formEntegrator.loadFormData('EDIT_' + componentName, {
-        params: {
-            id: id
-        },
-        onLoadSuccess: (data) => {
-            // Form verileri yüklendikten sonra kategorileri işaretle
-            if (data && data.categories && Array.isArray(data.categories)) {
-                setTimeout(() => {
-                    const categoryIds = data.categories.map(cat => cat.id);
-                    
-                    // Modal içindeki kategori seçicisini bul
-                    const modal = document.querySelector('#editModal');
-                    const selectElement = modal.querySelector('.kategori-select');
-                    
-                    if (selectElement) {
-                        // Select2 varsa onunla seç
-                        if (typeof $().select2 === 'function') {
-                            $(selectElement).val(categoryIds).trigger('change');
-                        } 
-                        // Yoksa manuel seç
-                        else {
-                            Array.from(selectElement.options).forEach(option => {
-                                option.selected = categoryIds.includes(parseInt(option.value));
-                            });
-                        }
-                    } else {
-                        console.error('Edit modal içinde kategori seçici bulunamadı!');
-                    }
-                }, 500); // Biraz daha uzun bekle (kategorilerin yüklenmesi için)
-            }
-        }
+    params: {
+    id: id
+    },
+    onLoadSuccess: (data) => {
+    // Form verileri yüklendikten sonra kategorileri işaretle
+    if (data && data.categories && Array.isArray(data.categories)) {
+    setTimeout(() => {
+    const categoryIds = data.categories.map(cat => cat.id);
+
+    // Modal içindeki kategori seçicisini bul
+    const modal = document.querySelector('#editModal');
+    const selectElement = modal.querySelector('.kategori-select');
+
+    if (selectElement) {
+    // Select2 varsa onunla seç
+    if (typeof $().select2 === 'function') {
+    $(selectElement).val(categoryIds).trigger('change');
+    }
+    // Yoksa manuel seç
+    else {
+    Array.from(selectElement.options).forEach(option => {
+    option.selected = categoryIds.includes(parseInt(option.value));
+    });
+    }
+    } else {
+    console.error('Edit modal içinde kategori seçici bulunamadı!');
+    }
+    }, 500); // Biraz daha uzun bekle (kategorilerin yüklenmesi için)
+    }
+    }
     });
 @endsection
 
 @push('styles')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<style>
-    /* Select2 stili */
-    .select2-container--default .select2-selection--multiple {
-        border-color: #ced4da;
-    }
-    .select2-container--default.select2-container--focus .select2-selection--multiple {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    /* İkon içeren seçenekler için stil */
-    .select2-results__option i, .select2-selection__choice i {
-        margin-right: 5px;
-    }
-</style>
+    <style>
+        /* Select2 stili */
+        .select2-container--default .select2-selection--multiple {
+            border-color: #ced4da;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* İkon içeren seçenekler için stil */
+        .select2-results__option i,
+        .select2-selection__choice i {
+            margin-right: 5px;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<script>
-// Kategori verilerini yükle - modal parametresi ekliyoruz
-function loadCategories(modalSelector) {
-    // Doğru modal içindeki kategori seçiciyi bul
-    const modal = document.querySelector(modalSelector);
-    if (!modal) {
-        return;
-    }
-    
-    const selectElement = modal.querySelector('.kategori-select');
-    if (!selectElement) {
-        return;
-    }
-    
-    // Yükleniyor mesajını göster
-    selectElement.innerHTML = '<option value="" disabled selected>Kategoriler yükleniyor...</option>';
-    
-    apiService.request({
-        url: '/portfolio-categories',
-        method: 'GET',
-        sweetalert2: false,
-        disableNotifications: true,
-        actions: {
-            onSuccess: (response) => {
-                const categories = response.data.data || [];
-                
-                // Eski options temizle
-                selectElement.innerHTML = '';
-                
-                // Eğer kategori yoksa uyarı göster
-                if (categories.length === 0) {
-                    selectElement.innerHTML = '<option value="" disabled>Henüz kategori bulunmuyor</option>';
-                    return;
-                }
-                
-                // Kategorileri ekle
-                categories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category.id;
-                    
-                    // Kategori ikonunu ekleme (varsa)
-                    let categoryText = category.name;
-                    if (category.icon) {
-                        categoryText = `<i class="${category.icon} me-1"></i> ${category.name}`;
-                    }
-                    
-                    option.innerHTML = categoryText;
-                    selectElement.appendChild(option);
-                });
-                
-                // Select2 kütüphanesini aktifleştir
-                if (typeof $().select2 === 'function') {
-                    $(selectElement).select2({
-                        placeholder: 'Kategori seçiniz',
-                        allowClear: true,
-                        templateResult: formatOption,
-                        templateSelection: formatOption
-                    });
-                }
-            },
-            onError: (error) => {
-                selectElement.innerHTML = '<option value="" disabled>Kategoriler yüklenemedi</option>';
+    <script>
+        // Kategori verilerini yükle - modal parametresi ekliyoruz
+        function loadCategories(modalSelector) {
+            // Doğru modal içindeki kategori seçiciyi bul
+            const modal = document.querySelector(modalSelector);
+            if (!modal) {
+                return;
             }
+
+            const selectElement = modal.querySelector('.kategori-select');
+            if (!selectElement) {
+                return;
+            }
+
+            // Yükleniyor mesajını göster
+            selectElement.innerHTML = '<option value="" disabled selected>Kategoriler yükleniyor...</option>';
+
+            apiService.request({
+                url: '/portfolio-categories',
+                method: 'GET',
+                sweetalert2: false,
+                disableNotifications: true,
+                actions: {
+                    onSuccess: (response) => {
+                        const categories = response.data.data || [];
+
+                        // Eski options temizle
+                        selectElement.innerHTML = '';
+
+                        // Eğer kategori yoksa uyarı göster
+                        if (categories.length === 0) {
+                            selectElement.innerHTML =
+                                '<option value="" disabled>Henüz kategori bulunmuyor</option>';
+                            return;
+                        }
+
+                        // Kategorileri ekle
+                        categories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.id;
+
+                            // Kategori ikonunu ekleme (varsa)
+                            let categoryText = category.name;
+                            if (category.icon) {
+                                categoryText = `<i class="${category.icon} me-1"></i> ${category.name}`;
+                            }
+
+                            option.innerHTML = categoryText;
+                            selectElement.appendChild(option);
+                        });
+
+                        // Select2 kütüphanesini aktifleştir
+                        if (typeof $().select2 === 'function') {
+                            $(selectElement).select2({
+                                placeholder: 'Kategori seçiniz',
+                                allowClear: true,
+                                templateResult: formatOption,
+                                templateSelection: formatOption
+                            });
+                        }
+                    },
+                    onError: (error) => {
+                        selectElement.innerHTML = '<option value="" disabled>Kategoriler yüklenemedi</option>';
+                    }
+                }
+            });
+
+            // İleriki kullanımlar için select elementini döndür
+            return selectElement;
         }
-    });
-    
-    // İleriki kullanımlar için select elementini döndür
-    return selectElement;
-}
 
-// İkon içeren seçenekleri düzgün göster (select2 için)
-function formatOption(option) {
-    if (!option.id) { return option.text; }
-    return $(option.element).html();
-}
+        // İkon içeren seçenekleri düzgün göster (select2 için)
+        function formatOption(option) {
+            if (!option.id) {
+                return option.text;
+            }
+            return $(option.element).html();
+        }
 
-// Modal açıldığında kategorileri yükle
-document.addEventListener('DOMContentLoaded', function() {
-    // Modal açılma olaylarına modal seçicisini ekliyoruz
-    document.getElementById('addModal').addEventListener('shown.bs.modal', function() {
-        loadCategories('#addModal');
-    });
-    
-    document.getElementById('editModal').addEventListener('shown.bs.modal', function() {
-        loadCategories('#editModal');
-    });
-});
-</script>
-<script>
-    // Görsel modalı açmak için fonksiyon
-    function openImageModal(imageUrl, imageTitle) {
-        // Modal başlığını ayarla
-        document.getElementById('imageModalLabel').textContent = imageTitle;
-        
-        // Modal görselini ayarla
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = imageUrl;
-        modalImage.alt = imageTitle;
-        
-        // Modal'ı açmak için
-        showModal('#imageModal');
-    }
-    
-    // Görsel yüklendiğinde
-    document.getElementById('modalImage').addEventListener('load', function() {
-        // Görsel yüklenmezse veya hatalıysa alternatif görsel göster
-        this.onerror = function() {
-            this.src = '{{ asset('images/no-image.png') }}';
-        };
-    });
-</script>
+        // Modal açıldığında kategorileri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal açılma olaylarına modal seçicisini ekliyoruz
+            document.getElementById('addModal').addEventListener('shown.bs.modal', function() {
+                loadCategories('#addModal');
+            });
+
+            document.getElementById('editModal').addEventListener('shown.bs.modal', function() {
+                loadCategories('#editModal');
+            });
+        });
+    </script>
+    <script>
+        // Görsel modalı açmak için fonksiyon
+        function openImageModal(imageUrl, imageTitle) {
+            // Modal başlığını ayarla
+            document.getElementById('imageModalLabel').textContent = imageTitle;
+
+            // Modal görselini ayarla
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageUrl;
+            modalImage.alt = imageTitle;
+
+            // Modal'ı açmak için
+            showModal('#imageModal');
+        }
+
+        // Görsel yüklendiğinde
+        document.getElementById('modalImage').addEventListener('load', function() {
+            // Görsel yüklenmezse veya hatalıysa alternatif görsel göster
+            this.onerror = function() {
+                this.src = '{{ asset('images/no-image.png') }}';
+            };
+        });
+
+        function viewGallery(portfolioId) {
+            window.location.href = '{{ route('admin.portfolioImages', ['id' => '__ID__']) }}'.replace('__ID__', portfolioId);
+        }
+    </script>
 @endpush
 
 @section('modal')
-<!-- Görsel Modalı -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Portfolyo Görseli</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-            </div>
-            <div class="modal-body text-center p-0">
-                <img src="" id="modalImage" class="img-fluid w-100" alt="Portfolyo Görseli">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+    <!-- Görsel Modalı -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Portfolyo Görseli</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img src="" id="modalImage" class="img-fluid w-100" alt="Portfolyo Görseli">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 @section('form')
     <!-- Başlık -->
@@ -242,11 +253,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <span class="input-group-text">
                 <i class="fa fa-images fa-fw" style="color: #6c757d;"></i>
             </span>
-            <input name="images[]" type="file" class="form-control" multiple accept="image/jpeg,image/png,image/jpg,image/svg+xml" />
+            <input name="images[]" type="file" class="form-control" multiple
+                accept="image/jpeg,image/png,image/jpg,image/svg+xml" />
         </div>
-        <small class="form-text text-muted">Seçtiğiniz görsellerden en son seçilen görsel ana görsel olarak ayarlanacaktır.</small>
+        <small class="form-text text-muted">Seçtiğiniz görsellerden en son seçilen görsel ana görsel olarak
+            ayarlanacaktır.</small>
     </div>
-     <!-- Kategoriler -->
+    <!-- Kategoriler -->
     <div class="col-md-12">
         <label for="categories" class="form-label">Portfolyo Kategorileri: </label>
         <div class="input-group mb-3">
@@ -257,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <option value="" disabled>Kategoriler yükleniyor...</option>
             </select>
         </div>
-        <small class="form-text text-muted">Projenizdeki portfolyoya uygun kategorileri seçiniz. Birden fazla kategori seçebilirsiniz.</small>
+        <small class="form-text text-muted">Projenizdeki portfolyoya uygun kategorileri seçiniz. Birden fazla kategori
+            seçebilirsiniz.</small>
     </div>
 @endsection
 
@@ -269,22 +283,26 @@ document.addEventListener('DOMContentLoaded', function() {
     <th>KATEGORİLER</th>
 @endsection
 
+@section('table-actions')
+    <button type="button" class="btn btn-link btn-primary btn-lg view-gallery-btn" data-bs-toggle="tooltip"
+        title="Görsel Galerisini Görüntüle" onclick="viewGallery(${info.id})">
+        <i class="fa fa-images"></i>
+    </button>
+@endsection
 @section('table-body')
     <td>
-        <img src="${info.main_image ? info.main_image : '{{ asset('images/no-image.png') }}'}" 
-             alt="Portfolyo Görseli" 
-             class="img-fluid" 
-             style="max-width: 100px; cursor: pointer;"
-             onclick="openImageModal('${info.main_image ? info.main_image : '{{ asset('images/no-image.png') }}'}', '${info.name ?? 'Portfolyo Görseli'}')">
+        <img src="${info.main_image ? info.main_image : '{{ asset('assets/images/no-image.png') }}'}" alt="Portfolyo Görseli"
+            class="img-fluid" style="max-width: 100px; cursor: pointer;"
+            onclick="openImageModal('${info.main_image ? info.main_image : '{{ asset('assets/images/no-image.png') }}'}', '${info.name ?? 'Portfolyo Görseli'}')">
     </td>
     <td>${info.name ?? 'Belirtilmemiş'}</td>
     <td>${info.link ? `<a href="${info.link}" target="_blank" class="text-primary">${info.link}</a>` : 'Belirtilmemiş'}</td>
     <td>${info.description ?? 'Belirtilmemiş'}</td>
     <td>
         ${info.categories ? info.categories.map((category, index) => {
-            const colors = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
-            const colorClass = colors[index % colors.length];
-            return `<span class="badge ${colorClass} me-1">${category.name}</span>`;
+        const colors = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
+        const colorClass = colors[index % colors.length];
+        return `<span class="badge ${colorClass} me-1">${category.name}</span>`;
         }).join(' ') : 'Belirtilmemiş'}
     </td>
 

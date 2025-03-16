@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CVInformationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ComponentController;
+use App\Models\Portfolio;
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -55,6 +56,18 @@ Route::prefix('admin')->group(function () {
     Route::get('/portfolioCategories', function () {
         return view('admin.pages.portfolioCategories');
     })->name('admin.portfolioCategories');
+
+    Route::get('/portfolios/images/{id}', function ($id) {
+        // Portfolyo ID'sini kullanarak portfolyo verisini çek
+        $portfolio = Portfolio::findOrFail($id);
+        
+        // Portfolyo verisini view'a aktar
+        return view('admin.pages.portfolioImages', [
+            'portfolio' => $portfolio
+        ]);
+    })->name('admin.portfolioImages');
+
+
 
 
 });

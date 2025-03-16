@@ -63,11 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('cv-information/set-active/{cvInformation}', [CVInformationController::class, 'setActive']);
 
     // Portfolyo görselleri yönetimi
-    Route::get('portfolios/{portfolio}/images', [PortfolioController::class, 'getImages']);
-    Route::post('portfolios/{portfolio}/images', [PortfolioController::class, 'addImages']);
-    Route::put('portfolios/images/order', [PortfolioController::class, 'updateImageOrder']);
-    Route::post('portfolios/{portfolio}/set-main-image', [PortfolioController::class, 'setMainImage']);
-    Route::delete('portfolios/images', [PortfolioController::class, 'deleteImage']);
+    Route::get('portfolios/images/{portfolio}', [PortfolioController::class, 'getImages']);
+    Route::post('portfolios/images/{portfolio}', [PortfolioController::class, 'addImages']);
+    Route::put('portfolios/images/order/{portfolio}', [PortfolioController::class, 'updateImageOrder']);
+    Route::post('portfolios/images/set-main-image/{portfolio}', [PortfolioController::class, 'setMainImage']);
+    Route::delete('portfolios/images/delete/{imageId}', [PortfolioController::class, 'deleteImage']);
     
     // ------------------------------------CV Bileşenleri İçin Rotalar----------------------------------------------
 

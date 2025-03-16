@@ -1389,6 +1389,52 @@ export const integratorConfig = {
         }
       }
     },
+    ADD_PORTFOLIOIMAGES: {
+      selector: '#addImageForm',
+      endpoint: '/portfolios/images/{portfolioId}',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        "images[]": {
+          rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          messages: {
+            required: 'En az bir portfolyo görseli gereklidir',
+            array: 'Görseller dizi formatında olmalıdır',
+            min: 'En az bir görsel yüklemelisiniz',
+            image: 'Dosya bir görsel olmalıdır',
+            mimes: 'Görsel jpeg,png,jpg,svg formatında olmalıdır',
+            max: 'Görsel en fazla 2MB olabilir',
+          }
+        }
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          console.log(formData.get('portfolio_id'));
+          config.endpoint = config.endpoint.replace('{portfolioId}', formData.get('portfolio_id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#addRowModal');
+          loadImages();
+          return true;
+        },
+        success: {
+          message: 'Görseller başarıyla eklendi'
+        },
+        errors: {
+          message: 'Görseller eklenirken bir hata oluştu',
+        }
+      }
+    },
   },
   API: {
     baseURL: 'http://127.0.0.1:8000/api', // API'nin temel URL'i

@@ -98,30 +98,6 @@ class PortfolioController extends Controller
             'message' => 'Portfolyo başarıyla silindi'
         ]);
     }
-    // Görselleri kaydetme yardımcı fonksiyonu
-    // private function savePortfolioImages(Portfolio $portfolio, $images)
-    // {
-    //     $isMainSet = false;
-    //     $sortOrder = 0;
-
-    //     foreach ($images as $image) {
-    //         // Görsel kaydetme
-    //         $path = $image->store('portfolio_images', 'public');
-
-    //         // İlk görsel ana görsel olsun
-    //         $isMain = !$isMainSet;
-    //         if ($isMain) {
-    //             $isMainSet = true;
-    //         }
-
-    //         // Görsel kaydı oluştur
-    //         $portfolio->images()->create([
-    //             'image_path' => $path,
-    //             'is_main' => $isMain,
-    //             'sort_order' => $sortOrder++,
-    //         ]);
-    //     }
-    // }
     // Ana görseli değiştirme
     public function setMainImage(Request $request, Portfolio $portfolio)
     {
@@ -141,13 +117,9 @@ class PortfolioController extends Controller
     }
 
     // Görsel silme
-    public function deleteImage(Request $request)
+    public function deleteImage($imageId)
     {
-        $request->validate([
-            'image_id' => 'required|exists:portfolio_images,id'
-        ]);
-
-        $image = PortfolioImage::findOrFail($request->image_id);
+        $image = PortfolioImage::findOrFail($imageId);
 
         // Dosyayı sil
         if (Storage::disk('public')->exists($image->image_path)) {
@@ -214,7 +186,7 @@ public function addImages(Request $request, Portfolio $portfolio)
 /**
  * Görsellerin sıralama düzenini güncelle
  */
-public function updateImageOrder(Request $request)
+public function updateImageOrder(Request $request, Portfolio $portfolio)
 {
     $request->validate([
         'images' => 'required|array',
@@ -222,10 +194,11 @@ public function updateImageOrder(Request $request)
         'images.*.sort_order' => 'required|integer|min:0'
     ]);
     
-    foreach ($request->images as $image) {
-        PortfolioImage::where('id', $image['id'])->update([
-            'sort_order' => $image['sort_order']
-        ]);
+     // Portfolyo kontrolü ekle
+     foreach ($request->images as $image) {
+        PortfolioImage::where('id', $image['id'])
+            ->where('portfolio_id', $portfolio->id)
+            ->update(['sort_order' => $image['sort_order']]);
     }
     
     return response()->json([
