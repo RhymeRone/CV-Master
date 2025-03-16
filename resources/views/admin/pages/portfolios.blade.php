@@ -281,7 +281,11 @@ document.addEventListener('DOMContentLoaded', function() {
     <td>${info.link ? `<a href="${info.link}" target="_blank" class="text-primary">${info.link}</a>` : 'Belirtilmemiş'}</td>
     <td>${info.description ?? 'Belirtilmemiş'}</td>
     <td>
-        ${info.categories ? info.categories.map(category => `<span class="badge bg-primary me-1">${category.name}</span>`).join(' ') : 'Belirtilmemiş'}
+        ${info.categories ? info.categories.map((category, index) => {
+            const colors = ['bg-primary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-dark'];
+            const colorClass = colors[index % colors.length];
+            return `<span class="badge ${colorClass} me-1">${category.name}</span>`;
+        }).join(' ') : 'Belirtilmemiş'}
     </td>
 
 @endsection
