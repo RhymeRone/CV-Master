@@ -292,6 +292,7 @@
                     @yield('table-body')
                     <td>
                         <div class="form-button-action">
+                                                    @yield('table-actions')
                             <button type="button" class="btn btn-link btn-primary btn-lg edit-btn" data-bs-toggle="tooltip"
                                 title="Bilgileri Düzenle" onclick="editRow(${info.id})">
                                 <i class="fa fa-edit"></i>
@@ -300,7 +301,6 @@
                                 title="Bilgileri Sil" onclick="deleteRow(${info.id})">
                                 <i class="fa fa-times"></i>
                             </button>
-                            @yield('table-actions')
                         </div>
                     </td>
                 </tr>
