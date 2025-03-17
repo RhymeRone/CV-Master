@@ -60,21 +60,27 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('admin.testimonials') }}">
+                                <i class="fas fa-comment-dots"></i>
+                                <p>Referanslar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#portfolios">
                                 <i class="fas fa-images"></i>
-                                <p>Portföyler</p>
+                                <p>Projeler</p>
                                 <span class="caret"></span>
                             </a>
                             <div class="collapse" id="portfolios">
                                 <ul class="nav nav-collapse">
                                     <li>
                                         <a href="{{ route('admin.portfolios') }}">
-                                            <i class="fas fa-plus-circle"></i> Portföy Ekle
+                                            <i class="fas fa-plus-circle"></i> Proje Ekle
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('admin.portfolioCategories') }}">
-                                            <i class="fas fa-plus-circle"></i> Kategori Ekle
+                                            <i class="fas fa-tags"></i> Kategoriler
                                         </a>
                                     </li>
                                 </ul>

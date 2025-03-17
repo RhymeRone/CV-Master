@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('portfolio_id')->constrained('portfolios')->onDelete('cascade');
             $table->string('image_path')->comment('Görsel dosya yolu');
             $table->boolean('is_main')->default(false)->comment('Ana görsel mi?');
+            $table->boolean('is_active')->default(false)->comment('Aktif mi?');
             $table->integer('sort_order')->default(0)->comment('Sıralama sırası');
             $table->timestamps();
             

@@ -10,11 +10,13 @@ class PortfolioImage extends Model
         'portfolio_id',
         'image_path',
         'is_main',
+        'is_active',
         'sort_order',
     ];
     
     protected $casts = [
         'is_main' => 'boolean',
+        'is_active' => 'boolean',
         'sort_order' => 'integer',
     ];
     

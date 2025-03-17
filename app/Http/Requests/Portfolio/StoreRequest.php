@@ -19,8 +19,8 @@ class StoreRequest extends FormRequest
             'link' => 'nullable|url|max:255',
             'images' => 'required|array|min:1',
             'images.*' => 'required|image|mimes:' . implode(',', config('admin.upload.image.mimes')) . '|max:' . config('admin.upload.image.max_size') . '|min:' . config('admin.upload.image.min_size'),
-            'categories' => 'required|array|min:1',
-            'categories.*' => 'required|exists:portfolio_categories,id'
+            'categories' => 'nullable|array|min:1',
+            'categories.*' => 'nullable|exists:portfolio_categories,id'
         ];
     }
 

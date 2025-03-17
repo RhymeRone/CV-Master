@@ -30,7 +30,6 @@ class UpdateRequest extends FormRequest
             'image.image' => 'Dosya bir görsel olmalıdır',
             'image.mimes' => 'Görsel '.implode(',', config('admin.upload.image.mimes')).' formatında olmalıdır',
             'image.max' => 'Görsel en fazla '.config('admin.upload.image.max_size').'KB olabilir',
-            'image.min' => 'Görsel en az '.config('admin.upload.image.min_size').'KB olmalıdır'
         ];
     }
 } 

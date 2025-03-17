@@ -49,6 +49,10 @@ Route::prefix('admin')->group(function () {
         return view('admin.pages.skills');
     })->name('admin.skills');
 
+    Route::get('/testimonials', function () {
+        return view('admin.pages.testimonials');
+    })->name('admin.testimonials');
+
     Route::get('/portfolios', function () {
         return view('admin.pages.portfolios');
     })->name('admin.portfolios');

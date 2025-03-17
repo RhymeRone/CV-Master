@@ -19,8 +19,8 @@ class UpdateRequest extends FormRequest
             'link' => 'nullable|url|max:255',
             'images' => 'sometimes|array',
             'images.*' => 'required|image|mimes:' . implode(',', config('admin.upload.image.mimes')) . '|max:' . config('admin.upload.image.max_size') . '|min:' . config('admin.upload.image.min_size'),
-            'categories' => 'required|array|min:1',
-            'categories.*' => 'required|exists:portfolio_categories,id'
+            'categories' => 'sometimes|array|min:1',
+            'categories.*' => 'sometimes|exists:portfolio_categories,id'
         ];
     }
 

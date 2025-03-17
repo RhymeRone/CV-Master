@@ -1280,9 +1280,8 @@ export const integratorConfig = {
           }
         },
         categories: {
-          rules: ['required', 'array', 'min:1'],
+          rules: ['nullable', 'array', 'min:1'],
           messages: {
-            required: 'En az bir kategori seçmelisiniz',
             array: 'Kategoriler dizi formatında olmalıdır',
             min: 'En az bir kategori seçmelisiniz',
           }
@@ -1364,9 +1363,8 @@ export const integratorConfig = {
           }
         },
         categories: {
-          rules: ['required', 'array', 'min:1'],
+          rules: ['nullable', 'array', 'min:1'],
           messages: {
-            required: 'En az bir kategori seçmelisiniz',
             array: 'Kategoriler dizi formatında olmalıdır',
             min: 'En az bir kategori seçmelisiniz',
           }
@@ -1419,7 +1417,6 @@ export const integratorConfig = {
       },
       actions: {
         onSubmit: (formData, config) => {
-          console.log(formData.get('portfolio_id'));
           config.endpoint = config.endpoint.replace('{portfolioId}', formData.get('portfolio_id'));
         },
         onSuccess: (response) => {
@@ -1432,6 +1429,149 @@ export const integratorConfig = {
         },
         errors: {
           message: 'Görseller eklenirken bir hata oluştu',
+        }
+      }
+    },
+    ADD_TESTIMONIALS: {
+      selector: '#addForm-testimonials',
+      endpoint: '/testimonials',
+      method: 'POST',
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Referans adı gereklidir',
+            string: 'Referans adı metin formatında olmalıdır',
+            max: 'Referans adı en fazla 255 karakter olabilir',
+          }
+        },
+        comment: {
+          rules: ['required', 'string'],
+          messages: {
+            required: 'Referans yorumu gereklidir',
+            string: 'Referans yorumu metin formatında olmalıdır',
+          }
+        },
+        job: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Referans mesleği gereklidir',
+            string: 'Referans mesleği metin formatında olmalıdır',
+            max: 'Referans mesleği en fazla 255 karakter olabilir',
+          }
+        },
+        image: {
+          rules: ['nullable', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048', 'min:10'],
+          messages: {
+            required: 'Referans fotoğrafı gereklidir',
+            image: 'Dosya bir görsel olmalıdır',
+            mimes: 'Görsel jpeg,png,jpg,svg formatında olmalıdır',
+            max: 'Görsel en fazla 2MB olabilir',
+            min: 'Görsel en az 10KB olmalıdır'
+          }
+        },
+      },
+      actions: {
+        onSuccess: (response) => {
+          disposeModal('#addModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Referans başarıyla eklendi'
+        },
+        errors: {
+          message: 'Referans eklenirken bir hata oluştu',
+        }
+      }
+    },
+    EDIT_TESTIMONIALS: {
+      selector: '#editForm-testimonials',
+      endpoint: '/testimonials/{id}',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data', // İçerik tipi
+        'X-HTTP-Method-Override': 'PUT',
+        'X-CSRF-TOKEN': typeof document !== 'undefined'
+          ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+      },
+      useFormData: true,
+      sweetalert2: true,
+      preventRedirect: true,
+      validation: true,
+      validationOptions: {
+        errorDisplayMode: 'inline',
+        showErrors: true,
+        errorClass: 'is-invalid',
+        successClass: 'is-valid',
+        errorColor: 'red',
+      },
+      getData: {
+        endpoint: '/testimonials/{id}',
+        autoFill: false,
+        mapping: {
+          '*': true
+        }
+      },
+      fields: {
+        name: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Referans adı gereklidir',
+            string: 'Referans adı metin formatında olmalıdır',
+            max: 'Referans adı en fazla 255 karakter olabilir',
+          }
+        },
+        comment: {
+          rules: ['required', 'string'],
+          messages: {
+            required: 'Referans yorumu gereklidir',
+            string: 'Referans yorumu metin formatında olmalıdır',
+          }
+        },
+        job: {
+          rules: ['required', 'string', 'max:255'],
+          messages: {
+            required: 'Referans mesleği gereklidir',
+            string: 'Referans mesleği metin formatında olmalıdır',
+            max: 'Referans mesleği en fazla 255 karakter olabilir',
+          }
+        },
+        image: {
+          rules: ['nullable', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
+          messages: {
+            image: 'Dosya bir görsel olmalıdır',
+            mimes: 'Görsel jpeg,png,jpg,svg formatında olmalıdır',
+            max: 'Görsel en fazla 2MB olabilir',
+          }
+        },
+      },
+      actions: {
+        onSubmit: (formData, config) => {
+          config.endpoint = config.endpoint.replace('{id}', formData.get('id'));
+        },
+        onSuccess: (response) => {
+          disposeModal('#editModal');
+          loadData();
+          return true;
+        },
+        success: {
+          message: 'Referans başarıyla güncellendi'
+        },
+        errors: {
+          message: 'Referans güncellenirken bir hata oluştu',
         }
       }
     },

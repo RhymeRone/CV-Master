@@ -1,7 +1,7 @@
 @extends('layouts.admin.component')
 
-@section('title', 'Portfolyo')
-@section('page-name', 'Portfolyo')
+@section('title', 'Projeler')
+@section('page-name', 'Proje')
 @section('component-name', 'portfolios')
 
 @section('route', route('admin.portfolios'))
@@ -187,7 +187,8 @@
         });
 
         function viewGallery(portfolioId) {
-            window.location.href = '{{ route('admin.portfolioImages', ['id' => '__ID__']) }}'.replace('__ID__', portfolioId);
+            window.location.href = '{{ route('admin.portfolioImages', ['id' => '__ID__']) }}'.replace('__ID__',
+                portfolioId);
         }
     </script>
 @endpush
@@ -198,11 +199,11 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Portfolyo Görseli</h5>
+                    <h5 class="modal-title" id="imageModalLabel">Proje Görseli</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
                 <div class="modal-body text-center p-0">
-                    <img src="" id="modalImage" class="img-fluid w-100" alt="Portfolyo Görseli">
+                    <img src="" id="modalImage" class="img-fluid w-100" alt="Proje Görseli">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
@@ -216,14 +217,14 @@
     <div class="col-md-12">
         <h6 class="mb-3"><i class="fa fa-cog me-2 text-primary"></i>@yield('page-name')</h6>
     </div>
-    <!-- Portfolyo Adı -->
+    <!-- Proje Adı -->
     <div class="col-md-6">
-        <label for="name" class="form-label">Portfolyo Adı: </label>
+        <label for="name" class="form-label">Proje Adı: </label>
         <div class="input-group mb-3">
             <span class="input-group-text">
                 <i class="fa fa-briefcase fa-fw" style="color: #6c757d;"></i>
             </span>
-            <input name="name" type="text" class="form-control" placeholder="Portfolyo adı giriniz" required />
+            <input name="name" type="text" class="form-control" placeholder="Proje adı giriniz" required />
         </div>
     </div>
     <!-- Bağlantı -->
@@ -261,28 +262,33 @@
     </div>
     <!-- Kategoriler -->
     <div class="col-md-12">
-        <label for="categories" class="form-label">Portfolyo Kategorileri: </label>
+        <label for="categories" class="form-label">Proje Kategorileri: </label>
         <div class="input-group mb-3">
             <span class="input-group-text">
                 <i class="fa fa-tags fa-fw" style="color: #6c757d;"></i>
             </span>
-            <select name="categories[]" id="categories" class="form-select select2 kategori-select" multiple required>
+            <select name="categories[]" id="categories" class="form-select select2 kategori-select" multiple>
                 <option value="" disabled>Kategoriler yükleniyor...</option>
             </select>
         </div>
-        <small class="form-text text-muted">Projenizdeki portfolyoya uygun kategorileri seçiniz. Birden fazla kategori
-            seçebilirsiniz.</small>
+        <small class="form-text text-muted">Projenize uygun kategorileri seçiniz. Birden fazla kategori seçebilirsiniz.</small>
     </div>
+@endsection
+
+@section('table-buttons')
+    <button class="btn btn-primary btn-round ms-3" onclick="window.location.href='{{ route('admin.portfolioCategories') }}'">
+        <i class="fa fa-tags"></i>
+        Kategoriler
+    </button>
 @endsection
 
 @section('table-header')
     <th>ANA GÖRSEL</th>
-    <th>PORTFOLYO ADI</th>
+    <th>PROJE ADI</th>
     <th>PROJE BAĞLANTISI</th>
     <th>AÇIKLAMA</th>
     <th>KATEGORİLER</th>
 @endsection
-
 @section('table-actions')
     <button type="button" class="btn btn-link btn-primary btn-lg view-gallery-btn" data-bs-toggle="tooltip"
         title="Görsel Galerisini Görüntüle" onclick="viewGallery(${info.id})">
@@ -291,12 +297,13 @@
 @endsection
 @section('table-body')
     <td>
-        <img src="${info.main_image ? info.main_image : '{{ asset('assets/images/no-image.png') }}'}" alt="Portfolyo Görseli"
-            class="img-fluid" style="max-width: 100px; cursor: pointer;"
-            onclick="openImageModal('${info.main_image ? info.main_image : '{{ asset('assets/images/no-image.png') }}'}', '${info.name ?? 'Portfolyo Görseli'}')">
+        <img src="${info.main_image ? info.main_image : '{{ asset('assets/img/no-image.png') }}'}" alt="Proje Görseli"
+            class="img-fluid rounded" style="width: 50px; height: 50px; cursor:pointer;"
+            onclick="openImageModal('${info.main_image ? info.main_image : '{{ asset('assets/img/no-image.png') }}'}', '${info.name ?? 'Proje Görseli'}')">
     </td>
     <td>${info.name ?? 'Belirtilmemiş'}</td>
-    <td>${info.link ? `<a href="${info.link}" target="_blank" class="text-primary">${info.link}</a>` : 'Belirtilmemiş'}</td>
+    <td>${info.link ? `<a href="${info.link}" target="_blank" class="text-primary">${info.link}</a>` : 'Belirtilmemiş'}
+    </td>
     <td>${info.description ?? 'Belirtilmemiş'}</td>
     <td>
         ${info.categories ? info.categories.map((category, index) => {

@@ -1,6 +1,6 @@
 @extends('layouts.admin.master')
 
-@section('title', 'Portfolyo Görselleri')
+@section('title', 'Proje Görselleri')
 
 @section('route', route('admin.portfolioImages', ['id' => $portfolio->id]))
 
@@ -11,7 +11,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title" id="portfolioName">'{{ $portfolio->name }}' İsimli Portfolyo Görselleri</h4>
+                        <h4 class="card-title" id="portfolioName">'{{ $portfolio->name }}' İsimli Proje Görselleri</h4>
                         <button class="btn btn-primary btn-round ms-auto" onclick="showModal('#addRowModal')">
                             <i class="fa fa-plus"></i>
                             Görsel Ekle
@@ -19,7 +19,7 @@
                         <button onclick="window.location.href='{{ route('admin.portfolios') }}'"
                             class="btn btn-outline-primary btn-round ms-2">
                             <i class="fa fa-arrow-left"></i>
-                            Portfolyo Listesine Geri Dön
+                            Proje Listesine Geri Dön
                         </button>
                     </div>
                 </div>
@@ -67,12 +67,12 @@
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="imageModalLabel">Portfolyo Görseli</h5>
+                                    <h5 class="modal-title" id="imageModalLabel">Proje Görseli</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Kapat"></button>
                                 </div>
                                 <div class="modal-body text-center p-0">
-                                    <img src="" id="modalImage" class="img-fluid w-100" alt="Portfolyo Görseli">
+                                    <img src="" id="modalImage" class="img-fluid w-100" alt="Proje Görseli">
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
@@ -85,7 +85,9 @@
                         <table id="add-row" class="display table table-hover">
                             <thead>
                                 <tr>
-                                    <th>AKTİF</th>
+                                    <th class="sortable-handle" style="width: 40px;"><i class="fa fa-sort"></i></th>
+                                    <th>ANA GÖRSEL</th>
+                                    <th>GÖRÜNÜR</th>
                                     <th>RESİM</th>
                                     <th>SIRASI</th>
                                     <th>EKLENME TARİHİ</th>
@@ -105,9 +107,33 @@
 @endsection
 
 @push('styles')
+    <style>
+        /* Sürüklenebilir öğeler için stil */
+        .sortable-ghost {
+            opacity: 0.5;
+            background: #c8ebfb;
+        }
+
+        .sortable-handle {
+            cursor: move;
+            cursor: -webkit-grabbing;
+        }
+
+        .sortable-chosen {
+            background-color: #f8f9fa;
+        }
+
+        /* Sürükleme ipucu stil */
+        .drag-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+    </style>
 @endpush
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
         var portfolioApiService;
         var formEntegrator;
@@ -119,22 +145,185 @@
                 formEntegrator = window.integrator;
                 setupModalListeners();
                 loadImages();
+
+                // Kaydetme başarısı ve hatalar için listener ekleyelim
+                document.addEventListener('orderSaved', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sıralama Kaydedildi',
+                        toast: true,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+
+                document.addEventListener('orderError', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Sıralama Kaydedilemedi',
+                        toast: true,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
             }, 100);
 
         });
 
-        // Ana görsel yapma fonksiyonu
-        function setMainImage(imageId) {
+        function deleteImage(imageId) {
+            portfolioApiService.request({
+                url: `/portfolios/images/delete/${imageId}`,
+                method: 'DELETE',
+                sweetalert2: true,
+                showConfirm: {
+                    enabled: true,
+                    title: 'Proje Görseli Silme Onayı',
+                    text: 'Bu işlemi gerçekleştirmek istediğinize emin misiniz?',
+                    icon: 'warning',
+                    confirmButtonText: 'Evet, Sil',
+                    cancelButtonText: 'İptal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33'
+                },
+                actions: {
+                    onSuccess: (response) => {
+                        // Sayfayı yenilemek yerine sadece ilgili satırı kaldır
+                        removeImageRow(imageId);
+
+                        // Başarı mesajı
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Görsel Silindi',
+                            text: 'Proje görseli başarıyla silindi',
+                            toast: true,
+                            position: 'bottom-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+
+                        // Eğer tablo boşsa, boş mesajını göster
+                        checkEmptyTable();
+                    },
+                    onError: (error) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: 'Görsel silinirken bir hata oluştu',
+                            toast: true,
+                            position: 'bottom-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    },
+                    success: {
+                        message: 'Proje görseli silindi'
+                    },
+                    errors: {
+                        message: 'Proje görseli silinemedi'
+                    }
+                }
+            });
+        }
+
+        // Silinen görseli DOM'dan kaldır
+        function removeImageRow(imageId) {
+            const row = document.querySelector(`#portfolioImagesList tr[data-id="${imageId}"]`);
+            if (row) {
+                // Silinme animasyonu ekleyelim
+                row.style.transition = 'all 0.3s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+
+                // Animasyon bittikten sonra DOM'dan kaldır
+                setTimeout(() => {
+                    row.remove();
+
+                    // Sıralama numaralarını güncelle
+                    updateSortOrderNumbers();
+
+                    // Eğer silinen görsel ana görselse, başka bir görseli ana görsel yap
+                    checkMainImage(imageId);
+                }, 300);
+            }
+        }
+
+        // Silinen görsel ana görselse, başka bir görseli ana görsel yap
+        function checkMainImage(deletedImageId) {
+            const wasMainImage = document.querySelector(
+                `#portfolioImagesList tr[data-id="${deletedImageId}"].table-primary`);
+
+            if (wasMainImage) {
+                // Eğer görseller kaldıysa, ilk görseli ana görsel yap
+                const firstImage = document.querySelector('#portfolioImagesList tr[data-id]');
+                if (firstImage) {
+                    const firstImageId = firstImage.getAttribute('data-id');
+                    // Sessizce API'ye gönder ve UI'ı güncelle (bildirim gösterme)
+                    setMainImage(firstImageId, true); // true parametresi sessiz modda çalıştırır
+                }
+            }
+        }
+
+        // Sıralama numaralarını güncelle
+        function updateSortOrderNumbers() {
+            const rows = document.querySelectorAll('#portfolioImagesList tr[data-id]');
+            rows.forEach((row, index) => {
+                const sortOrderCell = row.querySelector('.sort-order-value');
+                if (sortOrderCell) {
+                    sortOrderCell.textContent = index;
+                    row.setAttribute('data-sort', index);
+                }
+            });
+        }
+
+        // Tablo boşsa "Henüz görsel yok" mesajını göster
+        function checkEmptyTable() {
+            const tableBody = document.getElementById('portfolioImagesList');
+            const rows = tableBody.querySelectorAll('tr[data-id]');
+
+            if (rows.length === 0) {
+                tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="text-center">Henüz kaydedilmiş proje görselleri bulunmamaktadır.</td>
+            </tr>
+        `;
+            }
+        }
+
+        // setMainImage fonksiyonunu güncelleyelim (silent parametresi ekleyelim)
+        function setMainImage(imageId, silent = false) {
+            // Önce UI'ı güncelle
+            updateMainImageUI(imageId);
+
+            // Sonra API isteği gönder
             portfolioApiService.request({
                 url: `portfolios/images/set-main-image/${portfolioId}`,
                 method: 'POST',
                 data: {
                     image_id: imageId
                 },
-                sweetalert2: true,
+                sweetalert2: !silent, // Sessiz modda SweetAlert2 gösterme
                 actions: {
                     onSuccess: () => {
-                        loadImages(portfolioId);
+                        // Başarı mesajı (sessiz modda gösterme)
+                        if (!silent) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Ana görsel başarıyla güncellendi',
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    },
+                    onError: () => {
+                        // Hata durumunda UI'ı eski haline döndür
+                        if (silent) {
+                            // Sessiz modda sadece yeniden yükle
+                            loadImages();
+                        }
                     },
                     success: {
                         message: 'Ana görsel başarıyla güncellendi'
@@ -142,6 +331,36 @@
                     errors: {
                         message: 'Ana görsel güncellenirken bir hata oluştu'
                     }
+                }
+            });
+        }
+
+        function updateMainImageUI(selectedId) {
+            // Tüm radio buttonları ve satırları güncelle
+            const rows = document.querySelectorAll('#portfolioImagesList tr[data-id]');
+            rows.forEach(row => {
+                const rowId = row.getAttribute('data-id');
+                const isMain = rowId == selectedId;
+
+                // Satır arkaplan rengini güncelle
+                if (isMain) {
+                    row.classList.add('table-primary');
+                } else {
+                    row.classList.remove('table-primary');
+                }
+
+                // Radio button ve badge'i güncelle
+                const radio = row.querySelector('.active-status-input');
+                const badge = row.querySelector('.badge');
+
+                if (radio) {
+                    radio.checked = isMain;
+                    radio.disabled = isMain; // Seçili olanı disable et
+                }
+
+                if (badge) {
+                    badge.className = `badge ${isMain ? 'bg-primary' : 'bg-light text-dark'}`;
+                    badge.innerHTML = isMain ? '<i class="fa fa-star me-1"></i> Ana Görsel' : 'Ana Görsel Yap';
                 }
             });
         }
@@ -184,26 +403,25 @@
         function loadImages() {
             const portfolioImagesList = document.getElementById('portfolioImagesList');
 
-
             portfolioImagesList.innerHTML = `
-            <tr id="loading-row">
-              <td colspan="8" class="text-center">
-                    <div class="d-flex justify-content-center align-items-center py-4">
-                             <div class="position-relative">
-                                 <div class="spinner-border text-primary spinner-border-lg" style="width: 3rem; height: 3rem;" role="status">
-                                 <span class="visually-hidden">Yükleniyor...</span>
-                                 </div>
-                             </div>
-                             <div class="ms-4">
-                                 <h5 class="text-primary mb-1 fw-bold">Portfolyo Görselleri Yükleniyor</h5>
-                                 <div class="text-muted">
-                                     <small>Lütfen bekleyiniz, veriler hazırlanıyor...</small>
-                                 </div>
-                             </div>
-                    </div>
-              </td>
-            </tr>
-            `;
+    <tr id="loading-row">
+      <td colspan="8" class="text-center">
+            <div class="d-flex justify-content-center align-items-center py-4">
+                     <div class="position-relative">
+                         <div class="spinner-border text-primary spinner-border-lg" style="width: 3rem; height: 3rem;" role="status">
+                         <span class="visually-hidden">Yükleniyor...</span>
+                         </div>
+                     </div>
+                     <div class="ms-4">
+                         <h5 class="text-primary mb-1 fw-bold">Proje Görselleri Yükleniyor</h5>
+                         <div class="text-muted">
+                             <small>Lütfen bekleyiniz, veriler hazırlanıyor...</small>
+                         </div>
+                     </div>
+            </div>
+      </td>
+    </tr>
+    `;
 
             portfolioApiService.request({
                 url: 'portfolios/images/' + portfolioId,
@@ -214,60 +432,206 @@
                     onSuccess: (response) => {
                         portfolioImagesList.innerHTML = '';
                         if (response.data.data.length > 0) {
-                            response.data.data.forEach(imageInfo => {
+                            // Görsel verilerini sıralama numarasına göre sırala
+                            const sortedImages = response.data.data.sort((a, b) => (a.sort_order || 999) - (b
+                                .sort_order || 999));
+
+                            sortedImages.forEach(imageInfo => {
+                                console.log(imageInfo);
                                 portfolioImagesList.innerHTML += `
-                                    <tr ${imageInfo.is_main ? 'class="table-primary"' : ''}>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input active-status-input" type="radio" name="active"
-                                                    value="${imageInfo.id}" ${imageInfo.is_active ? 'checked disabled' : ''} onclick="setActive(${imageInfo.id})">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="avatar">
-                                                <img src="${imageInfo.image_path ? imageInfo.image_path : '/assets/images/no-image.png'}"
-                                                    alt="${imageInfo.name || 'Portfolyo Resmi'}"
-                                                    class="avatar-img rounded"
-                                                    style="cursor:pointer;"
-                                                    onclick="openImageModal('${imageInfo.image_path ? imageInfo.image_path : '/assets/images/no-image.png'}', '${imageInfo.name || 'Portfolyo Resmi'}')">
-                                            </div>
-                                        </td>
-                                        <td>${imageInfo.sort_order ?? 'Belirtilmemiş' }</td>
-                                        <td>${imageInfo.created_at ? new Date(imageInfo.created_at).toLocaleDateString('tr-TR') : 'Belirtilmemiş' }</td>
-                                        <td>
-                                            <div class="form-button-action">
-                                                <button type="button" 
-                                                    class="btn btn-link btn-primary btn-lg set-main-btn"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Ana Görsel Yap"
-                                                    onclick="setMainImage(${imageInfo.id})">
-                                                    <i class="fa fa-certificate"></i>
-                                                </button>
-                                                <button type="button"
-                                                    class="btn btn-link btn-primary btn-lg delete-btn"
-                                                    data-bs-toggle="tooltip"
-                                                    title="Sil"
-                                                    onclick="deleteImage(${imageInfo.id})">
-                                                    <i class="fa fa-times"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `;
+            <tr ${imageInfo.is_main ? 'class="table-primary"' : ''} data-id="${imageInfo.id}" data-sort="${imageInfo.sort_order || 0}">
+                <td class="sortable-handle text-center">
+                    <i class="fa fa-grip-vertical text-muted"></i>
+                </td>
+                <td>
+                <div class="form-check d-flex align-items-center">
+                    <input class="form-check-input active-status-input" type="radio" name="active"
+                        value="${imageInfo.id}" ${imageInfo.is_main ? 'checked' : ''} 
+                        onclick="setMainImage(${imageInfo.id})">
+                    <label class="form-check-label ms-2" for="mainImage_${imageInfo.id}">
+                        <span class="badge ${imageInfo.is_main ? 'bg-primary' : 'bg-light text-dark'}">
+                            ${imageInfo.is_main ? '<i class="fa fa-star me-1"></i> Ana Görsel' : 'Ana Görsel Yap'}
+                        </span>
+                    </label>
+                </div>
+            </td>
+                <!-- GÖRÜNÜR OLMA DURUMU -->
+                <td>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input is-active-switch" type="checkbox" 
+                            id="isActiveSwitch${imageInfo.id}" 
+                            ${imageInfo.is_active ? 'checked' : ''} 
+                            onchange="toggleActiveStatus(${imageInfo.id}, this.checked)">
+                        <label class="form-check-label" for="isActiveSwitch${imageInfo.id}">
+                            ${imageInfo.is_active ? 'Aktif' : 'Pasif'}
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    <div class="avatar">
+                        <img src="${imageInfo.image_path ? imageInfo.image_path : '/assets/img/no-image.png'}"
+                            alt="${imageInfo.name || 'Proje Resmi'}"
+                            class="avatar-img rounded"
+                            style="cursor:pointer;"
+                            onclick="openImageModal('${imageInfo.image_path ? imageInfo.image_path : '/assets/img/no-image.png'}', '${imageInfo.name || 'Proje Resmi'}')">
+                    </div>
+                </td>
+                <td><span class="sort-order-value">${imageInfo.sort_order ?? 'Belirtilmemiş'}</span></td>
+                <td>${imageInfo.created_at ? new Date(imageInfo.created_at).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                <td>
+                    <div class="form-button-action">
+                        <button type="button"
+                            class="btn btn-link btn-primary btn-lg delete-btn"
+                            data-bs-toggle="tooltip"
+                            title="Sil"
+                            onclick="deleteImage(${imageInfo.id})">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
                             });
+
+                            // Sıralama bilgisi ekle
+                            const cardBody = document.querySelector('.card-body');
+                            if (cardBody && !document.querySelector('.drag-hint')) {
+                                const dragHint = document.createElement('div');
+                                dragHint.className = 'drag-hint mb-3';
+                                dragHint.innerHTML =
+                                    '<i class="fa fa-info-circle me-2"></i>Görselleri sürükleyip bırakarak sıralama yapabilirsiniz.';
+                                cardBody.insertBefore(dragHint, cardBody.firstChild);
+                            }
+
+                            // Sortable'ı başlat
+                            initSortable();
                         } else {
                             portfolioImagesList.innerHTML = `
-                                <tr>
-                                    <td colspan="8" class="text-center">Henüz kaydedilmiş portfolyo görselleri bulunmamaktadır.</td>
-                                </tr>
-                                `;
+                        <tr>
+                            <td colspan="8" class="text-center">Henüz kaydedilmiş proje görselleri bulunmamaktadır.</td>
+                        </tr>
+                    `;
                         }
                     }
                 }
             });
         }
 
-        // Fonksiyonlar
+        // Sortable başlatma fonksiyonu
+        function initSortable() {
+            const tableBody = document.getElementById('portfolioImagesList');
+
+            if (tableBody && tableBody.children.length > 1) {
+                const sortable = new Sortable(tableBody, {
+                    handle: '.sortable-handle',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    dragClass: 'sortable-drag',
+                    onEnd: function(evt) {
+                        updateImageOrder();
+                    }
+                });
+            }
+        }
+
+        // Görsel sıralama verilerini hazırlayıp API'ye gönderen fonksiyon
+        function updateImageOrder() {
+            // Tüm görsel satırlarını topla
+            const rows = document.querySelectorAll('#portfolioImagesList tr[data-id]');
+
+            if (rows.length === 0) return;
+
+            // Görsel sıralamasını güncelle
+            const images = [];
+            rows.forEach((row, index) => {
+                const imageId = row.getAttribute('data-id');
+                if (imageId) {
+                    // Sıralama numarasını güncelle (hem UI'da hem de veri olarak)
+                    const sortOrderCell = row.querySelector('.sort-order-value');
+                    if (sortOrderCell) {
+                        sortOrderCell.textContent = index;
+                    }
+
+                    images.push({
+                        id: parseInt(imageId),
+                        sort_order: index
+                    });
+                }
+            });
+
+            // Sıralamayı API'ye gönder
+            if (images.length > 0) {
+                // Yükleniyor göstergesi
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn btn-primary btn-sm position-fixed';
+                saveBtn.style.bottom = '20px';
+                saveBtn.style.right = '20px';
+                saveBtn.style.zIndex = '1050';
+                saveBtn.innerHTML = '<i class="fa fa-sync fa-spin me-2"></i>Sıralama Kaydediliyor...';
+                document.body.appendChild(saveBtn);
+
+
+                // portfolioApiService ile API isteği gönder
+                portfolioApiService.request({
+                    url: `portfolios/images/order/${portfolioId}`,
+                    method: 'PUT',
+                    data: {
+                        images: images
+                    },
+                    headers: {
+                        'Content-Type': 'application/json', // Özel content type belirt
+                        'Accept': 'application/json'
+                    },
+                    sweetalert2: false,
+                    disableNotifications: true,
+                    actions: {
+                        onSuccess: (response) => {
+                            // Başarı mesajı
+                            saveBtn.innerHTML = '<i class="fa fa-check me-2"></i>Sıralama Kaydedildi';
+                            saveBtn.className = 'btn btn-success btn-sm position-fixed';
+
+                            // 2 saniye sonra butonu kaldır
+                            setTimeout(() => {
+                                saveBtn.remove();
+                            }, 2000);
+
+                            // Başarı bildirimi
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sıralama Kaydedildi',
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        },
+                        onError: (error) => {
+                            // Hata mesajı
+                            saveBtn.innerHTML = '<i class="fa fa-times me-2"></i>Sıralama Kaydedilemedi';
+                            saveBtn.className = 'btn btn-danger btn-sm position-fixed';
+
+                            // 3 saniye sonra butonu kaldır
+                            setTimeout(() => {
+                                saveBtn.remove();
+                            }, 3000);
+
+                            // Hata bildirimi
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Sıralama Kaydedilemedi',
+                                text: error.message || 'Bir hata oluştu',
+                                toast: true,
+                                position: 'bottom-end',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
         function loadCvDetail(cvId) {
             cvApiService.request({
                 url: `/cv-information/${cvId}`,
@@ -364,23 +728,23 @@
                                 </div>
 
                                 ${cvInfo.slogan && cvInfo.slogan.length > 0 ? `
-                                                                                                                                                                                                        <div class="card border-0 shadow-sm mb-4">
-                                                                                                                                                                                                            <div class="card-header bg-white">
-                                                                                                                                                                                                                <h6 class="mb-0 fw-bold"><i class="fa fa-quote-left text-primary me-2"></i>Sloganlar
-                                                                                                                                                                                                                </h6>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                            <div class="card-body p-0">
-                                                                                                                                                                                                                <div class="list-group list-group-flush">
-                                                                                                                                                                                                                    ${cvInfo.slogan.map(slogan => `
+                                                                                                                                                                                                                                                                        <div class="card border-0 shadow-sm mb-4">
+                                                                                                                                                                                                                                                                            <div class="card-header bg-white">
+                                                                                                                                                                                                                                                                                <h6 class="mb-0 fw-bold"><i class="fa fa-quote-left text-primary me-2"></i>Sloganlar
+                                                                                                                                                                                                                                                                                </h6>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                            <div class="card-body p-0">
+                                                                                                                                                                                                                                                                                <div class="list-group list-group-flush">
+                                                                                                                                                                                                                                                                                    ${cvInfo.slogan.map(slogan => `
                                             <div class="list-group-item border-0 d-flex">
                                                 <i class="fa fa-angle-right text-primary me-2 mt-1"></i>
                                                 <span>${slogan}</span>
                                             </div>
                                             `).join('')}
-                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                        </div>
-                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                        ` : ''}
                             </div>
 
                             <!-- Sağ Kolon -->
@@ -472,59 +836,59 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 ${cvInfo.social_media && cvInfo.social_media.linkedin ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.linkedin}" 
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fab fa-linkedin fa-fw fa-lg"></i> <span class="fs-6">LinkedIn</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.linkedin}" 
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fab fa-linkedin fa-fw fa-lg"></i> <span class="fs-6">LinkedIn</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.github ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.github}"
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fab fa-github fa-fw fa-lg"></i> <span class="fs-6">GitHub</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.github}"
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fab fa-github fa-fw fa-lg"></i> <span class="fs-6">GitHub</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.twitter ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.twitter}"
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fab fa-twitter fa-fw fa-lg"></i> <span class="fs-6">Twitter</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.twitter}"
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fab fa-twitter fa-fw fa-lg"></i> <span class="fs-6">Twitter</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
                                             </tr>
                                             <tr>
                                                 ${cvInfo.social_media && cvInfo.social_media.facebook ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.facebook}"
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fab fa-facebook fa-fw fa-lg"></i> <span class="fs-6">Facebook</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.facebook}"
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fab fa-facebook fa-fw fa-lg"></i> <span class="fs-6">Facebook</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.instagram ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.instagram}"
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fab fa-instagram fa-fw fa-lg"></i> <span class="fs-6">Instagram</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.instagram}"
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fab fa-instagram fa-fw fa-lg"></i> <span class="fs-6">Instagram</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
 
                                                 ${cvInfo.social_media && cvInfo.social_media.website ? `
-                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
-                                                                                                                                                                                                                            <a href="${cvInfo.social_media.website}"
-                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
-                                                                                                                                                                                                                                <i class="fa fa-globe fa-fw fa-lg"></i> <span class="fs-6">Website</span>
-                                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                                        ` : ''}
+                                                                                                                                                                                                                                                                                        <td style="width: 33.333%; padding: 5px;">
+                                                                                                                                                                                                                                                                                            <a href="${cvInfo.social_media.website}"
+                                                                                                                                                                                                                                                                                            class="btn btn-outline-secondary w-100 py-2" target="_blank">
+                                                                                                                                                                                                                                                                                                <i class="fa fa-globe fa-fw fa-lg"></i> <span class="fs-6">Website</span>
+                                                                                                                                                                                                                                                                                            </a>
+                                                                                                                                                                                                                                                                                        </td>
+                                                                                                                                                                                                                                                                                        ` : ''}
                                             </tr>
                                         </table>
                                     </div>
@@ -559,30 +923,53 @@
             });
         }
 
-        function deleteImage(imageId) {
+             // Görsel durumunu değiştirme fonksiyonu
+        function toggleActiveStatus(imageId, isActive) {
+            // Önce UI'ı hemen güncelle
+            const switchLabel = document.querySelector(`label[for="isActiveSwitch${imageId}"]`);
+            if (switchLabel) {
+                switchLabel.textContent = isActive ? 'Aktif' : 'Pasif';
+            }
             portfolioApiService.request({
-                url: `/portfolios/images/delete/${imageId}`,
-                method: 'DELETE',
-                sweetalert2: true,
-                showConfirm: {
-                    enabled: true,
-                    title: 'Portfolyo Görseli Silme Onayı',
-                    text: 'Bu işlemi gerçekleştirmek istediğinize emin misiniz?',
-                    icon: 'warning',
-                    confirmButtonText: 'Evet, Sil',
-                    cancelButtonText: 'İptal',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33'
+                url: `portfolios/images/toggle-active/${imageId}`,
+                method: 'POST',
+                data: {
+                    is_active: isActive
                 },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                sweetalert2: true,
                 actions: {
                     onSuccess: () => {
-                        loadImages();
+                        // Başarılı mesajı
+                        Swal.fire({
+                            icon: 'success',
+                            title: isActive ? 'Görsel aktifleştirildi' : 'Görsel pasifleştirildi',
+                            toast: true,
+                            position: 'bottom-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    },
+                    onError: (error) => {
+                        // Hata durumunda UI'ı eski haline geri döndür
+                        if (switchLabel) {
+                            switchLabel.textContent = isActive ? 'Pasif' : 'Aktif';
+                        }
+
+                        // Checkbox'ı da eski haline döndür
+                        const checkbox = document.getElementById(`isActiveSwitch${imageId}`);
+                        if (checkbox) {
+                            checkbox.checked = !isActive;
+                        }
                     },
                     success: {
-                        message: 'Portfolyo görseli silindi'
+                        message: isActive ? 'Görsel başarıyla aktifleştirildi' : 'Görsel başarıyla pasifleştirildi'
                     },
                     errors: {
-                        message: 'Portfolyo görseli silinemedi'
+                        message: 'Görsel durumu güncellenirken bir hata oluştu'
                     }
                 }
             });

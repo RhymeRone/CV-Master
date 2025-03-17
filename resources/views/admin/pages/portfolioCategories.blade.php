@@ -1,6 +1,6 @@
 @extends('layouts.admin.component')
 
-@section('title', 'Portfolyo Kategorileriniz')
+@section('title', 'Proje Kategorileriniz')
 @section('page-name', 'Kategori')
 @section('component-name', 'portfolio-categories')
 @section('form-name', 'PORTFOLIOCATEGORIES')
@@ -107,13 +107,13 @@
     <div class="col-md-12">
         <h6 class="mb-3"><i class="fa fa-cog me-2 text-primary"></i>@yield('page-name')</h6>
     </div>
-    <!-- Portfolyo Kategori Adı -->
+    <!-- Proje Kategori Adı -->
     <div class="col-md-6">
         <div class="input-group mb-3">
             <span class="input-group-text">
                 <i class="fa fa-cog fa-fw" style="color: #6c757d;"></i>
             </span>
-            <input name="name" type="text" class="form-control" placeholder="Portfolyo kategori adı giriniz"
+            <input name="name" type="text" class="form-control" placeholder="Proje kategori adı giriniz"
                 required />
         </div>
     </div>
@@ -132,10 +132,15 @@
 @endsection
 
 @section('table-header')
-    <th>PORTFOLYO KATEGORİSİ ADI</th>
+    <th>KATEGORİ ADI</th>
     <th>İKON</th>
 @endsection
-
+@section('table-buttons')
+    <button class="btn btn-primary btn-round ms-3" onclick="window.location.href='{{ route('admin.portfolios') }}'">
+        <i class="fa fa-briefcase"></i>
+        Projeler
+    </button>
+@endsection
 @section('table-body')
     <td>${info.name ?? 'Belirtilmemiş'}</td>
     <td><i class="${info.icon ?? ''}"></i></td>

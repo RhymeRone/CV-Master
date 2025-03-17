@@ -1350,7 +1350,7 @@
         document.getElementById('modalImage').addEventListener('load', function() {
             // Görsel yüklenmezse veya hatalıysa alternatif görsel göster
             this.onerror = function() {
-                this.src = '{{ asset('images/no-image.png') }}';
+                this.src = '{{ asset('assets/img/no-image.png') }}';
             };
         });
     </script>

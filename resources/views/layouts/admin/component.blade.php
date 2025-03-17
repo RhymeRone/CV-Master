@@ -12,6 +12,7 @@
                             <i class="fa fa-plus"></i>
                             @yield('page-name') Ekle
                         </button>
+                        @yield('table-buttons')
                     </div>
                 </div>
                 <div class="card-body">
