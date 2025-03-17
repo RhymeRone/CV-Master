@@ -15,6 +15,17 @@ use Illuminate\Support\Facades\Log;
 class PortfolioController extends Controller
 {
 
+    // Yeni bir endpoint ekleyin
+public function testAuth(Request $request)
+{
+    // Kullanıcı bilgilerini ve token'ı döndür
+    return response()->json([
+        'user' => $request->user(),
+        'token_id' => $request->user() ? $request->user()->currentAccessToken()->id : null,
+        'token_abilities' => $request->user() ? $request->user()->currentAccessToken()->abilities : null,
+        'message' => 'Eğer bu mesajı görüyorsanız, token doğrulaması başarılı!'
+    ]);
+}
     public function index()
     {
         $portfolios = Portfolio::all();

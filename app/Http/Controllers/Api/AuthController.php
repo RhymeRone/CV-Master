@@ -3,51 +3,58 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // Zaten giriş yapılmış mı kontrol et
-        if (cache('admin_token') && $request->bearerToken() === cache('admin_token')) {
-            return response()->json([
-                'message' => 'Zaten giriş yapılmış'
-            ], 400);
-        }
-
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
-
-        if ($request->email === config('admin.email') && 
-            $request->password === config('admin.password')) {
-            
-            $token = bin2hex(random_bytes(32));
-            $lifetime = config('admin.token_lifetime');
-            
-            cache(['admin_token' => $token], now()->addSeconds($lifetime));
-            
+        
+        $admin = Admin::where('email', $request->email)->first();
+        
+        if (!$admin || !Hash::check($request->password, $admin->password)) {
             return response()->json([
-                'token' => $token,
-                'type' => 'Bearer',
-                'expires_in' => $lifetime
-            ]);
+                'success' => false,
+                'message' => 'Girdiğiniz bilgiler hatalı.',
+                'errors' => [
+                    'email' => ['Girdiğiniz e-posta veya şifre hatalı.']
+                ]
+            ], 401);
         }
-
-        return response()->json([
-            'message' => 'Yetkisiz erişim'
-        ], 401);
-    }
-
-    public function logout()
-    {
-        cache()->forget('admin_token');
+        
+        // Token'ı veritabanında sakla (sanctum yapıyor)
+        $token = $admin->createToken('admin-token', ['admin'], now()->addDay())->plainTextToken;
         
         return response()->json([
+            'success' => true,
+            'token' => $token,
+            'type' => 'Bearer',
+            'expires_in' => 86400 // 24 saat
+        ]);
+    }
+    public function logout(Request $request)
+    {
+        // Token kontrolü yap
+        if (!$request->user('admin') || !$request->user('admin')->currentAccessToken()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçersiz veya eksik token. Çıkış yapılamadı.'
+            ], 401);
+        }
+        
+        // Token geçerliyse sil
+        $request->user('admin')->currentAccessToken()->delete();
+        
+        return response()->json([
+            'success' => true,
             'message' => 'Başarıyla çıkış yapıldı'
         ]);
     }
-} 
+}

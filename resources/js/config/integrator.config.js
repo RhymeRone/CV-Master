@@ -9,7 +9,7 @@ export const integratorConfig = {
       preventRedirect: false, // Başarılı istekten sonra yönlendirmeyi engeller
       validation: true, // validasyon kontrolünü aktifleştir
       sweetalert2: true, // SweetAlert2 kullanımını etkinleştirir false ile console hataları gösterir.
-      // tokenKey: 'token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
+   //   tokenName: '_token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
       // tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
       // -> tokenName ne işe yarar? 
       // -> tokenName değeri girildiğinde, token değeri localStorage'da data.token.tokenName şeklinde saklanır.
@@ -1250,9 +1250,9 @@ export const integratorConfig = {
         name: {
           rules: ['required', 'string', 'max:255'],
           messages: {
-            required: 'Portfolyo adı gereklidir',
-            string: 'Portfolyo adı metin formatında olmalıdır.',
-            max: 'Portfolyo adı en fazla 255 karakter olmalıdır.',
+            required: 'Proje adı gereklidir',
+            string: 'Proje adı metin formatında olmalıdır.',
+            max: 'Proje adı en fazla 255 karakter olmalıdır.',
           }
         },
         description: {
@@ -1262,16 +1262,17 @@ export const integratorConfig = {
           }
         },
         link: {
-          rules: ['nullable', 'url', 'max:255'],
+          rules: ['nullable', 'url', 'max:255', 'regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/'],
           messages: {
             url: 'Geçerli bir URL giriniz',
             max: 'Link en fazla 255 karakter olabilir',
+            regex: 'Geçerli bir URL formatı giriniz (örn: https://example.com)'
           }
         },
         'images[]': {
           rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
           messages: {
-            required: 'En az bir portfolyo görseli gereklidir',
+            required: 'En az bir proje görseli gereklidir',
             array: 'Görseller dizi formatında olmalıdır',
             min: 'En az bir görsel yüklemelisiniz',
             image: 'Dosya bir görsel olmalıdır',
@@ -1294,10 +1295,10 @@ export const integratorConfig = {
           return true;
         },
         success: {
-          message: 'Portfolyo başarıyla eklendi'
+          message: 'Proje başarıyla eklendi'
         },
         errors: {
-          message: 'Portfolyo eklenirken bir hata oluştu',
+          message: 'Proje eklenirken bir hata oluştu',
         }
       }
     },
@@ -1334,9 +1335,9 @@ export const integratorConfig = {
         name: {
           rules: ['required', 'string', 'max:255'],
           messages: {
-            required: 'Portfolyo adı gereklidir',
-            string: 'Portfolyo adı metin formatında olmalıdır.',
-            max: 'Portfolyo adı en fazla 255 karakter olmalıdır.',
+            required: 'Proje adı gereklidir',
+            string: 'Proje adı metin formatında olmalıdır.',
+            max: 'Proje adı en fazla 255 karakter olmalıdır.',
           }
         },
         description: {
@@ -1346,10 +1347,11 @@ export const integratorConfig = {
           }
         },
         link: {
-          rules: ['nullable', 'url', 'max:255'],
+          rules: ['nullable', 'url', 'max:255', 'regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/'],
           messages: {
             url: 'Geçerli bir URL giriniz',
             max: 'Link en fazla 255 karakter olabilir',
+            regex: 'Geçerli bir URL formatı giriniz (örn: https://example.com)'
           }
         },
         'images[]': {
@@ -1380,10 +1382,10 @@ export const integratorConfig = {
           return true;
         },
         success: {
-          message: 'Portfolyo başarıyla güncellendi'
+          message: 'Proje başarıyla güncellendi'
         },
         errors: {
-          message: 'Portfolyo güncellenirken bir hata oluştu',
+          message: 'Proje güncellenirken bir hata oluştu',
         }
       }
     },
@@ -1406,7 +1408,7 @@ export const integratorConfig = {
         "images[]": {
           rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
           messages: {
-            required: 'En az bir portfolyo görseli gereklidir',
+            required: 'En az bir proje görseli gereklidir',
             array: 'Görseller dizi formatında olmalıdır',
             min: 'En az bir görsel yüklemelisiniz',
             image: 'Dosya bir görsel olmalıdır',
@@ -1589,7 +1591,8 @@ export const integratorConfig = {
     sweetalert2: true, // Sweetalert2 kullanımı
     preventRedirect: false, // Yönlendirme engelleme
     // tokenKey: 'token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
-    //  tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
+   // clearToken: true, // Token silme
+       tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
     // tokenName ne işe yarar? 
     // tokenName değeri girildiğinde, token değeri localStorage'da data.token.tokenName şeklinde saklanır.
     // tokenName değeri api yanıtında token ismidir. Yanıtta token ismi verilmişse bu değeri giriniz. 
@@ -1601,7 +1604,6 @@ export const integratorConfig = {
       showConfirmButton: true, // Hata durumunda bildirim butonu gösterimi
       message: 'Bir hata oluştu', // Hata durumunda mesaj
       401: {
-        redirect: '/login',
         message: 'Yetkisiz erişim',
       },
       500: {

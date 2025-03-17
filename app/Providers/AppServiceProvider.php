@@ -22,20 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Sanctum'a custom token doğrulama mantığı ekle
-        Sanctum::getAccessTokenFromRequestUsing(function (Request $request) {
-            return $request->bearerToken();
-        });
-
-        // Sanctum'a custom user provider ekle
-        Auth::viaRequest('sanctum', function (Request $request) {
-            $token = $request->bearerToken();
-            
-            if ($token && cache('admin_token') === $token) {
-                return new \stdClass(); // Dummy user object
-            }
-            
-            return null;
-        });
+        
     }
 }

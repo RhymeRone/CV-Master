@@ -15,7 +15,7 @@ use App\Http\Controllers\Api\CVComponentController;
 
 // Auth routes
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum','ability:admin']); // 127.0.0.1:8000/api/logout
 
 // CV Information routes
 Route::get('cv-information', [CVInformationController::class, 'index']);
@@ -50,8 +50,11 @@ Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show'])
 Route::post('contact', [ContactController::class, 'sendMessage'])
     ->middleware('throttle.contact');
 
+    // Debug rotası
+Route::get('test-auth', [PortfolioController::class, 'testAuth'])->middleware('auth:admin');
+
 // Admin routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:admin','ability:admin'])->group(function () {
     Route::apiResource('cv-information', CVInformationController::class)->except(['index', 'show']);
     Route::apiResource('skills', SkillController::class)->except(['index', 'show']);
     Route::apiResource('experiences', ExperienceController::class)->except(['index', 'show']);
