@@ -16,6 +16,12 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('avatar')->nullable(); // Profil resmi yolu
+            $table->string('phone')->nullable(); // Telefon numarası
+            $table->text('address')->nullable(); // Adres bilgisi
+            $table->text('bio')->nullable(); // Kısa biyografi/hakkında
+            $table->string('position')->nullable(); // Pozisyon veya unvan
+            $table->string('website')->nullable(); // Kişisel web sitesi
             $table->rememberToken();
             $table->timestamps();
         });

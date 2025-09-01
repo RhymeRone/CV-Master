@@ -39,7 +39,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
-            "@php artisan lang:add tr --force",
+            "@php artisan lang:add tr",
             "@php artisan storage:link"
         ],
         "post-update-cmd": [

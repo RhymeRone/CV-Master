@@ -4,22 +4,35 @@ use App\Http\Controllers\Api\CVInformationController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ComponentController;
 use App\Models\Portfolio;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
+use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\ContactController;
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
+Route::get('sanctum/csrf-cookie', [CsrfCookieController::class, 'show']);
 
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
-
-Route::prefix('admin')->group(function () {
     // Admin Dashboard
     Route::get('/dashboard', function () {
         return view('admin.pages.dashboard');
     })->name('admin.dashboard');
-
-    Route::get('/profile', function () {
-        return view('admin.pages.profile');
-    })->name('admin.profile');
+    Route::prefix('/profile')->middleware(['auth:admin'])->group(function () {
+        Route::get('/', [AdminProfileController::class, 'index'])->name('admin.profile'); // Dikkat: '.index' yok
+        Route::put('/update', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+        Route::post('/avatar', [AdminProfileController::class, 'updateAvatar'])->name('admin.profile.avatar');
+        Route::put('/password', [AdminProfileController::class, 'updatePassword'])->name('admin.profile.password');
+    });
+    // İletişim mesajları için rotalar
+    Route::prefix('contacts')->middleware(['auth:admin'])->group(function () {
+        Route::post('/{id}/read', [ContactController::class, 'markAsRead'])->name('admin.contacts.read');
+        Route::post('/{id}/reply', [ContactController::class, 'reply'])->name('admin.contacts.reply');
+        Route::delete('/{id}', [ContactController::class, 'destroy'])->name('admin.contacts.destroy');
+        Route::get('/{id}', [ContactController::class, 'show'])->name('admin.contacts.show');
+    });
 
     Route::get('/inbox', function () {
         return view('admin.pages.inbox');
@@ -30,6 +43,7 @@ Route::prefix('admin')->group(function () {
     })->name('admin.settings');
 
     Route::get('/logout', function () {
+        
         return view('admin.pages.logout');
     })->name('admin.logout');
 
@@ -64,13 +78,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/portfolios/images/{id}', function ($id) {
         // Portfolyo ID'sini kullanarak portfolyo verisini çek
         $portfolio = Portfolio::findOrFail($id);
-        
+
         // Portfolyo verisini view'a aktar
         return view('admin.pages.portfolioImages', [
             'portfolio' => $portfolio
         ]);
     })->name('admin.portfolioImages');
-
 
 
 

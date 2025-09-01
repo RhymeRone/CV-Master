@@ -9,7 +9,7 @@ export const integratorConfig = {
       preventRedirect: false, // Başarılı istekten sonra yönlendirmeyi engeller
       validation: true, // validasyon kontrolünü aktifleştir
       sweetalert2: true, // SweetAlert2 kullanımını etkinleştirir false ile console hataları gösterir.
-   //   tokenName: '_token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
+      //   tokenName: '_token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
       // tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
       // -> tokenName ne işe yarar? 
       // -> tokenName değeri girildiğinde, token değeri localStorage'da data.token.tokenName şeklinde saklanır.
@@ -42,9 +42,20 @@ export const integratorConfig = {
       },
       actions: {
         // onSubmit callback desteği: Form gönderilmeden önce çalışır.
-        onSubmit: (formData) => { console.log(formData) }, // Form verilerini konsola yazdır
+        onSubmit: async (formData, config) => {
+          try {
+            // CSRF cookie'sini al ve tamamlanmasını bekle
+            await axios.get('/sanctum/csrf-cookie');
+            
+            // CSRF işlemi tamamlandıktan sonra form göndermeye devam et
+            return true; // İşlem başarılı, formu göndermeye devam et
+          } catch (error) {
+            console.error('CSRF cookie alınamadı:', error);
+            return false; // Formu göndermeyi durdur
+          }
+        }, // Form verilerini konsola yazdır
         // onSuccess callback desteği: API başarılı yanıt verdiğinde çalışır.
-        onSuccess: (response) => { console.log(response + "onSuccess başarılı"); return true }, // true döndürürse default işlemler çalışır.
+        onSuccess: (response) => { console.log(response.data + "onSuccess başarılı"); return true }, // true döndürürse default işlemler çalışır.
         // onError callback desteği: API hata döndürdüğünde çalışır.
         onError: (error) => { console.log(error); return true }, // false döndürürse default hata işlemleri çalışmaz.
         success: {
@@ -1270,7 +1281,7 @@ export const integratorConfig = {
           }
         },
         'images[]': {
-          rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          rules: ['required', 'array', 'min:1', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
           messages: {
             required: 'En az bir proje görseli gereklidir',
             array: 'Görseller dizi formatında olmalıdır',
@@ -1355,7 +1366,7 @@ export const integratorConfig = {
           }
         },
         'images[]': {
-          rules: ['nullable', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          rules: ['nullable', 'array', 'min:1', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
           messages: {
             array: 'Görseller dizi formatında olmalıdır',
             min: 'En az bir görsel yüklemelisiniz',
@@ -1406,7 +1417,7 @@ export const integratorConfig = {
       },
       fields: {
         "images[]": {
-          rules: ['required', 'array', 'min:1','image','mimes:jpeg,png,jpg,svg','max:2048'],
+          rules: ['required', 'array', 'min:1', 'image', 'mimes:jpeg,png,jpg,svg', 'max:2048'],
           messages: {
             required: 'En az bir proje görseli gereklidir',
             array: 'Görseller dizi formatında olmalıdır',
@@ -1583,16 +1594,20 @@ export const integratorConfig = {
     headers: {
       'Content-Type': 'multipart/form-data', // İçerik tipi
       'Accept': 'application/json', // Kabul edilen içerik tipi
-      'X-CSRF-TOKEN': typeof document !== 'undefined'
-        ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-        : process.env.CSRF_TOKEN // CSRF token'ının otomatik algılanması
+
     },
     timeout: 30000, // İstek zaman aşımı (ms)
+    axios: {
+      withCredentials: true,
+      withXSRFToken: true,
+      xsrfCookieName: "XSRF-TOKEN",
+      xsrfHeaderName: "X-XSRF-TOKEN",
+    },
     sweetalert2: true, // Sweetalert2 kullanımı
     preventRedirect: false, // Yönlendirme engelleme
     // tokenKey: 'token', // Token anahtarı (header'da token değeri), tokenName'e göre önceliklidir.
-   // clearToken: true, // Token silme
-       tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
+    // clearToken: true, // Token silme
+    tokenName: 'token', // Token adı (localStorage'da token adı, dot notation desteği bulunmaktadır örneğin data.token.tokenName. tokenKey değeri girilirse bu alan gerekli değildir.)
     // tokenName ne işe yarar? 
     // tokenName değeri girildiğinde, token değeri localStorage'da data.token.tokenName şeklinde saklanır.
     // tokenName değeri api yanıtında token ismidir. Yanıtta token ismi verilmişse bu değeri giriniz. 

@@ -8,15 +8,21 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-// Admin Model
+
 class Admin extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', 
+        'email', 
+        'password', 
+        'avatar',
+        'phone',
+        'position',
+        'website',
+        'address',
+        'bio'
     ];
 
     protected $hidden = [

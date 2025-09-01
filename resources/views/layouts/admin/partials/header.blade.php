@@ -257,12 +257,12 @@
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#"
                                     aria-expanded="false">
                                     <div class="avatar-sm">
-                                        <img src="{{ asset('assets/img/admin/profile/profile.jpg') }}" alt="..."
+                                        <img src="{{ asset($admin->avatar ? 'storage/' . $admin->avatar : 'assets/img/default-avatar.jpg') }}" alt="..."
                                             class="avatar-img rounded-circle" />
                                     </div>
                                     <span class="profile-username">
-                                        <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">Hizrian</span>
+                                        <span class="op-7">Merhaba,</span>
+                                        <span class="fw-bold">{{ ucwords(strtolower($admin->name)) }}</span>
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn">
@@ -270,27 +270,25 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{ asset('assets/img/admin/profile/profile.jpg') }}"
+                                                    <img src="{{ asset($admin->avatar ? 'storage/' . $admin->avatar : 'assets/img/default-avatar.png') }}"
                                                         alt="image profile" class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
-                                                    <h4>Hizrian</h4>
-                                                    <p class="text-muted">hello@example.com</p>
+                                                    <h4>{{ ucwords(strtolower($admin->name)) }}</h4>
+                                                    <p class="text-muted">{{ $admin->email }}</p>
                                                     <a href="{{ route('admin.profile') }}"
-                                                        class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                        class="btn btn-xs btn-secondary btn-sm">Profili Görüntüle</a>
                                                 </div>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ route('admin.profile') }}">My
-                                                Profile</a>
-                                            <a class="dropdown-item" href="{{ route('admin.inbox') }}">Inbox</a>
+                                            <a class="dropdown-item" href="{{ route('admin.profile') }}">Profili Görüntüle</a>
+                                            <a class="dropdown-item" href="{{ route('admin.inbox') }}">Mesajlar</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ route('admin.settings') }}">Account
-                                                Setting</a>
+                                            <a class="dropdown-item" href="{{ route('admin.settings') }}">Ayarlar</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ route('admin.logout') }}">Logout</a>
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="window.logout()">Çıkış Yap</a>
                                         </li>
                                     </div>
                                 </ul>

@@ -7,6 +7,8 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
@@ -16,9 +18,9 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-        
+
         $admin = Admin::where('email', $request->email)->first();
-        
+
         if (!$admin || !Hash::check($request->password, $admin->password)) {
             return response()->json([
                 'success' => false,
@@ -28,30 +30,39 @@ class AuthController extends Controller
                 ]
             ], 401);
         }
-        
-        // Token'ı veritabanında sakla (sanctum yapıyor)
-        $token = $admin->createToken('admin-token', ['admin'], now()->addDay())->plainTextToken;
-        
+
+        // // // CSRF token'ı yeniliyoruz
+        $request->session()->regenerate();
+
+        Auth::guard('admin')->login($admin, $request->boolean('remember', false));
+
+        // Debug bilgisi ekle
+        $isAuthenticated = Auth::guard('admin')->check();
+        $authenticatedUser = Auth::guard('admin')->user();
+
+
         return response()->json([
             'success' => true,
-            'token' => $token,
-            'type' => 'Bearer',
-            'expires_in' => 86400 // 24 saat
+            'user' => $admin,
+            'debug' => [
+                'isAuthenticated' => $isAuthenticated,
+                'authenticatedUser' => $authenticatedUser,
+                'sessionId' => $request->session()->getId()
+            ]
         ]);
     }
     public function logout(Request $request)
     {
-        // Token kontrolü yap
-        if (!$request->user('admin') || !$request->user('admin')->currentAccessToken()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Geçersiz veya eksik token. Çıkış yapılamadı.'
-            ], 401);
+        Auth::guard('admin')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Tüm çerezleri temizle
+        foreach ($request->cookies as $name => $value) {
+            Cookie::queue(Cookie::forget($name));
         }
-        
-        // Token geçerliyse sil
-        $request->user('admin')->currentAccessToken()->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Başarıyla çıkış yapıldı'
